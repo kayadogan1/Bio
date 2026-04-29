@@ -3,116 +3,975 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doğan Kaya | Links</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Doğan Kaya | Backend Developer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #0d1117; 
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 50px 20px;
-            margin: 0;
+        :root {
+            --bg: #0a0d12;
+            --surface: #11161d;
+            --surface-soft: #151b23;
+            --line: #27313d;
+            --line-strong: #384554;
+            --text: #eef3f8;
+            --muted: #9aa7b4;
+            --soft: #748291;
+            --accent: #6aa6ff;
+            --accent-soft: rgba(106, 166, 255, 0.13);
+            --success: #5ac17b;
         }
 
-        .profile-img {
-            width: 120px;
-            height: 120px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top left, rgba(106, 166, 255, 0.10), transparent 34rem),
+                linear-gradient(180deg, #0a0d12 0%, #0d1117 100%);
+            color: var(--text);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            letter-spacing: 0;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .wrapper {
+            width: min(100%, 920px);
+            margin: 0 auto;
+            padding: 56px 20px 72px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 22px;
+            align-items: center;
+            margin-bottom: 38px;
+        }
+
+        .avatar {
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
-            border: 3px solid #58a6ff; 
             object-fit: cover;
-            margin-bottom: 15px;
+            border: 1px solid var(--line-strong);
+            background: var(--surface);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            width: fit-content;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(90, 193, 123, 0.28);
+            border-radius: 999px;
+            padding: 5px 11px;
+            color: var(--success);
+            background: rgba(90, 193, 123, 0.08);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: var(--success);
         }
 
         h1 {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            line-height: 1;
+            letter-spacing: 0;
+            margin-bottom: 12px;
         }
 
-        p {
-            color: #8b949e;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
+        .lead {
+            max-width: 670px;
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.75;
         }
 
-        .link-container {
-            width: 100%;
-            max-width: 400px;
+        .lead strong {
+            color: var(--text);
+            font-weight: 650;
+        }
+
+        .quick-links {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .link-card {
-            background-color: #161b22;
-            padding: 15px 20px;
+        .quick-links a {
+            border: 1px solid var(--line);
             border-radius: 8px;
+            padding: 9px 12px;
+            color: var(--text);
+            background: rgba(17, 22, 29, 0.78);
             text-decoration: none;
-            color: white;
-            border: 1px solid #30363d;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+        }
+
+        .quick-links a:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateY(-1px);
+        }
+
+        .section {
+            margin-top: 34px;
+        }
+
+        .section-title {
             display: flex;
             align-items: center;
-            transition: all 0.3s ease;
-            font-weight: 500;
+            gap: 12px;
+            margin-bottom: 14px;
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.74rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
-        .link-card:hover {
-            background-color: #21262d;
-            transform: translateY(-2px);
-            border-color: #58a6ff;
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: var(--line);
         }
 
-        .icon {
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(17, 22, 29, 0.82);
+        }
+
+        .about {
+            padding: 22px;
+            color: var(--muted);
+            line-height: 1.85;
+            font-size: 0.96rem;
+        }
+
+        .about strong {
+            color: var(--text);
+            font-weight: 650;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            padding: 17px 16px;
+        }
+
+        .stat-value {
+            color: var(--accent);
             font-size: 1.5rem;
-            margin-right: 15px;
-            width: 30px;
-            text-align: center;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 7px;
         }
 
-        .fa-github { color: #ffffff; }
-        .fa-linkedin { color: #0077b5; }
-        .fa-envelope { color: #D14836; }
-        .fa-globe { color: #2f81f7; }
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .stack {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            padding: 16px;
+        }
+
+        .stack-group {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(21, 27, 35, 0.72);
+            padding: 16px;
+        }
+
+        .stack-group h3 {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            border: 1px solid var(--line-strong);
+            border-radius: 6px;
+            padding: 6px 9px;
+            color: var(--muted);
+            background: rgba(10, 13, 18, 0.28);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            line-height: 1.2;
+        }
+
+        .tag.primary {
+            color: var(--accent);
+            border-color: rgba(106, 166, 255, 0.36);
+            background: var(--accent-soft);
+        }
+
+        .projects {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .project {
+            padding: 20px;
+            transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        }
+
+        .project:hover {
+            border-color: var(--line-strong);
+            background: var(--surface-soft);
+            transform: translateY(-2px);
+        }
+
+        .project.featured {
+            grid-column: 1 / -1;
+        }
+
+        .project-kicker {
+            color: var(--accent);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            margin-bottom: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .project h3 {
+            font-size: 1.05rem;
+            margin-bottom: 9px;
+        }
+
+        .project p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .project-points {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin: 16px 0 2px;
+        }
+
+        .project-point {
+            border-left: 2px solid var(--line-strong);
+            padding-left: 10px;
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.55;
+        }
+
+        .project-point strong {
+            display: block;
+            color: var(--text);
+            font-size: 0.78rem;
+            margin-bottom: 2px;
+        }
+
+        .project .tags {
+            margin-top: 14px;
+        }
+
+        .blog-list,
+        .links-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .blog-list {
+            gap: 14px;
+        }
+
+        .blog-feature {
+            padding: 22px;
+            border-color: rgba(106, 166, 255, 0.34);
+            background:
+                linear-gradient(135deg, rgba(106, 166, 255, 0.14), rgba(17, 22, 29, 0.86) 42%),
+                rgba(17, 22, 29, 0.86);
+        }
+
+        .blog-feature h3 {
+            font-size: clamp(1.35rem, 4vw, 2rem);
+            line-height: 1.2;
+            margin-bottom: 10px;
+        }
+
+        .blog-feature p {
+            color: var(--muted);
+            line-height: 1.75;
+            max-width: 760px;
+        }
+
+        .blog-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .blog-card,
+        .link-card {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 16px;
+            align-items: center;
+            padding: 16px 18px;
+            text-decoration: none;
+            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+        }
+
+        .blog-card:hover,
+        .link-card:hover {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateY(-1px);
+        }
+
+        .blog-card[aria-disabled="true"] {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .blog-card[aria-disabled="true"]:hover {
+            border-color: var(--line);
+            background: rgba(17, 22, 29, 0.82);
+            transform: none;
+        }
+
+        .blog-title,
+        .link-title {
+            font-weight: 700;
+            font-size: 0.94rem;
+            margin-bottom: 4px;
+        }
+
+        .blog-meta,
+        .link-meta {
+            color: var(--muted);
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        .url-label {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            white-space: nowrap;
+        }
+
+        .article {
+            margin-top: 16px;
+            padding: 26px;
+        }
+
+        .article h3 {
+            font-size: 1.25rem;
+            margin: 30px 0 12px;
+        }
+
+        .article h3:first-child {
+            margin-top: 0;
+        }
+
+        .article h4 {
+            margin: 18px 0 8px;
+            font-size: 0.98rem;
+        }
+
+        .article p,
+        .article li {
+            color: var(--muted);
+            font-size: 0.94rem;
+            line-height: 1.85;
+        }
+
+        .article ul {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0 0 20px;
+        }
+
+        .article strong {
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .explain-card,
+        .visual-card {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(21, 27, 35, 0.74);
+            padding: 16px;
+        }
+
+        .explain-card h4,
+        .visual-card h4 {
+            margin-top: 0;
+        }
+
+        .code-block {
+            overflow-x: auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: #070a0f;
+            margin: 14px 0;
+        }
+
+        .code-block pre {
+            padding: 16px;
+            color: #d9e7ff;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.78rem;
+            line-height: 1.65;
+        }
+
+        .diagram {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .diagram-row {
+            display: grid;
+            grid-template-columns: 112px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .diagram-label {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+        }
+
+        .diagram-track {
+            min-height: 42px;
+            border: 1px dashed var(--line-strong);
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .thread-pill {
+            border: 1px solid rgba(106, 166, 255, 0.36);
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.68rem;
+            padding: 5px 8px;
+        }
+
+        .thread-pill.carrier {
+            border-color: rgba(90, 193, 123, 0.34);
+            background: rgba(90, 193, 123, 0.10);
+            color: var(--success);
+        }
+
+        .thread-pill.blocked {
+            border-color: rgba(248, 81, 73, 0.34);
+            background: rgba(248, 81, 73, 0.10);
+            color: #ff8a84;
+        }
+
+        .simulator {
+            margin-top: 18px;
+            border: 1px solid rgba(106, 166, 255, 0.30);
+            border-radius: 8px;
+            background: rgba(10, 13, 18, 0.42);
+            padding: 18px;
+        }
+
+        .sim-controls {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 14px 0 18px;
+        }
+
+        .sim-control label {
+            display: block;
+            color: var(--muted);
+            font-size: 0.78rem;
+            margin-bottom: 8px;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .sim-control input {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .sim-output {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .sim-metric {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 14px;
+            background: rgba(21, 27, 35, 0.62);
+        }
+
+        .sim-value {
+            color: var(--accent);
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .sim-label {
+            color: var(--muted);
+            font-size: 0.76rem;
+            line-height: 1.45;
+        }
+
+        .sim-note {
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.65;
+            margin-top: 12px;
+        }
 
         footer {
-            margin-top: 40px;
-            color: #484f58;
-            font-size: 0.8rem;
+            margin-top: 46px;
+            color: var(--soft);
+            text-align: center;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+        }
+
+        @media (max-width: 720px) {
+            .wrapper {
+                padding-top: 34px;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .avatar {
+                width: 84px;
+                height: 84px;
+            }
+
+            .stack,
+            .projects,
+            .project-points,
+            .article-grid,
+            .sim-controls,
+            .sim-output {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .blog-card,
+            .link-card {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .url-label {
+                white-space: normal;
+            }
         }
     </style>
 </head>
 <body>
-
-    <img src="https://github.com/kayadogan1.png" alt="Doğan Kaya" class="profile-img">
-    
-    <h1>Doğan Kaya</h1>
-    <p>Backend Developer | Java & .NET Core</p>
-
-    <div class="link-container">
-        
-        <a href="https://github.com/kayadogan1" class="link-card" target="_blank">
-            <i class="fab fa-github icon"></i>
-            <span>GitHub Profilim</span>
-        </a>
-
-        <a href="https://www.linkedin.com/in/dogann-kaya" class="link-card" target="_blank">
-            <i class="fab fa-linkedin icon"></i>
-            <span>LinkedIn</span>
-        </a>
-
-        <a href="mailto:dogann2536@gmail.com" class="link-card">
-            <i class="fas fa-envelope icon"></i>
-            <span>Bana Mail At</span>
-        </a>
-
+<main class="wrapper">
+    <header class="hero">
+        <img class="avatar" src="https://github.com/kayadogan1.png" alt="Doğan Kaya">
+        <div>
+            <div class="eyebrow">Backend Developer</div>
+            <h1>Doğan Kaya</h1>
+            <p class="lead">
+                Java ve .NET ekosistemlerinde backend geliştiriyorum. Özellikle <strong>finansal veri akışları</strong>,
+                <strong>mikroservis mimarileri</strong>, <strong>API tasarımı</strong> ve bulut üzerinde çalışan
+                sürdürülebilir sistemler ilgimi çekiyor.
+            </p>
+            <nav class="quick-links" aria-label="Profil bağlantıları">
+                <a href="https://github.com/kayadogan1" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://www.linkedin.com/in/dogann-kaya" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:dogann2536@gmail.com">E-posta</a>
+            </nav>
         </div>
+    </header>
+
+    <section class="section" id="hakkimda">
+        <h2 class="section-title">Hakkımda</h2>
+        <div class="panel about">
+            <p>
+                Backend tarafında yalnızca endpoint yazmaya değil, sistemin üretimde nasıl davranacağına da odaklanıyorum.
+                Temiz kod, okunabilir mimari, DDD yaklaşımı, test edilebilir servisler ve gözlemlenebilirlik benim için
+                günlük geliştirme pratiğinin parçası. Spring Boot ve .NET Core ile çalışırken veritabanı tasarımından
+                CI/CD akışlarına kadar ürünün tamamını düşünen bir geliştirme tarzını seviyorum.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" aria-label="Özet bilgiler">
+        <h2 class="section-title">Kısa Özet</h2>
+        <div class="stats">
+            <div class="panel stat">
+                <div class="stat-value">2+</div>
+                <div class="stat-label">Yıl deneyim</div>
+            </div>
+            <div class="panel stat">
+                <div class="stat-value">10+</div>
+                <div class="stat-label">Proje</div>
+            </div>
+            <div class="panel stat">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Ana stack</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="teknolojiler">
+        <h2 class="section-title">Teknoloji Yığını</h2>
+        <div class="panel stack">
+            <div class="stack-group">
+                <h3>Programming Languages</h3>
+                <div class="tags">
+                    <span class="tag primary">Java</span>
+                    <span class="tag primary">C#</span>
+                    <span class="tag">C</span>
+                    <span class="tag">C++</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">TypeScript</span>
+                </div>
+            </div>
+            <div class="stack-group">
+                <h3>Backend Frameworks</h3>
+                <div class="tags">
+                    <span class="tag primary">Spring Boot</span>
+                    <span class="tag">Spring Cloud</span>
+                    <span class="tag primary">.NET Core</span>
+                    <span class="tag">Hibernate</span>
+                    <span class="tag">Flyway</span>
+                </div>
+            </div>
+            <div class="stack-group">
+                <h3>Frontend</h3>
+                <div class="tags">
+                    <span class="tag primary">React</span>
+                    <span class="tag">HTML</span>
+                    <span class="tag">CSS</span>
+                </div>
+            </div>
+            <div class="stack-group">
+                <h3>Cloud & Infrastructure</h3>
+                <div class="tags">
+                    <span class="tag primary">AWS</span>
+                    <span class="tag primary">Docker</span>
+                    <span class="tag primary">PostgreSQL</span>
+                    <span class="tag">Redis</span>
+                    <span class="tag">Apache Kafka</span>
+                    <span class="tag">Supabase</span>
+                </div>
+            </div>
+            <div class="stack-group">
+                <h3>Security & Observability</h3>
+                <div class="tags">
+                    <span class="tag primary">Keycloak</span>
+                    <span class="tag">OAuth2</span>
+                    <span class="tag">Elasticsearch</span>
+                    <span class="tag">Kibana</span>
+                    <span class="tag">OpenTelemetry</span>
+                    <span class="tag">Grafana</span>
+                </div>
+            </div>
+            <div class="stack-group">
+                <h3>Architecture & Tools</h3>
+                <div class="tags">
+                    <span class="tag primary">Microservices</span>
+                    <span class="tag">API Gateway</span>
+                    <span class="tag">REST APIs</span>
+                    <span class="tag">OOP</span>
+                    <span class="tag">MVC</span>
+                    <span class="tag">Git</span>
+                    <span class="tag">Postman</span>
+                    <span class="tag">Swagger</span>
+                </div>
+            </div>
+            <div class="stack-group">
+                <h3>Testing</h3>
+                <div class="tags">
+                    <span class="tag primary">JUnit</span>
+                    <span class="tag">Mockito</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="blog">
+        <h2 class="section-title">Blog Yazıları</h2>
+        <div class="blog-list">
+            <a class="panel blog-card blog-feature" href="blog-virtual-threads.html">
+                <div>
+                    <div class="blog-title">Java Virtual Thread'ler: Java 21'den Java 24'e carrier thread meselesi</div>
+                    <div class="blog-meta">
+                        Sıfırdan anlatım: thread nedir, virtual thread neyi değiştirir, carrier thread neden bloklanır
+                        ve bu durum performansı nasıl etkiler?
+                    </div>
+                    <div class="blog-meta-row">
+                        <span class="tag primary">Java 21</span>
+                        <span class="tag">Java 24</span>
+                        <span class="tag">Virtual Threads</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+                <span class="url-label">Oku</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="section" id="projeler">
+        <h2 class="section-title">Projeler</h2>
+        <div class="projects">
+            <article class="panel project featured">
+                <div class="project-kicker">Finance Portal</div>
+                <h3>Finansal portföy, piyasa verisi ve kullanıcı işlemleri için backend odaklı platform</h3>
+                <p>
+                    Hisse, kripto ve tahvil gibi varlıkları tek panelde takip etmeye odaklanan; kullanıcı yönetimi,
+                    portföy hesaplama, canlı/veri odaklı fiyat güncelleme ve raporlama akışlarını içeren finans portalı.
+                    Sistem tarafında ölçeklenebilir servis yapısı, cache stratejileri, asenkron mesajlaşma ve bulut
+                    dağıtım süreci birlikte ele alındı.
+                </p>
+                <div class="project-points">
+                    <div class="project-point">
+                        <strong>Backend mimarisi</strong>
+                        Spring Boot servisleri, REST API tasarımı, katmanlı mimari ve DDD odaklı domain ayrımı.
+                    </div>
+                    <div class="project-point">
+                        <strong>Veri katmanı</strong>
+                        PostgreSQL ile ilişkisel modelleme, Redis ile cache, Elasticsearch ile hızlı arama ve filtreleme.
+                    </div>
+                    <div class="project-point">
+                        <strong>Dağıtık akış</strong>
+                        Kafka üzerinden fiyat, bildirim ve işlem olaylarının servisler arasında taşınması.
+                    </div>
+                    <div class="project-point">
+                        <strong>Yayınlama</strong>
+                        Docker, AWS ve CI/CD pipeline ile otomatik build, test ve deploy akışı.
+                    </div>
+                </div>
+                <div class="tags">
+                    <span class="tag primary">Java</span>
+                    <span class="tag primary">Spring Boot</span>
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">Redis</span>
+                    <span class="tag">Elasticsearch</span>
+                    <span class="tag">Kafka</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">AWS</span>
+                    <span class="tag">CI/CD</span>
+                </div>
+            </article>
+
+            <article class="panel project">
+                <div class="project-kicker">Finstant</div>
+                <h3>Finansal veri akışı ve arama altyapısı üzerine Java tabanlı platform</h3>
+                <p>
+                    REST ve telnet tabanlı veri girişlerini işleyen, finansal verileri domain katmanında ayrıştıran ve
+                    Kafka üzerinden tüketici servislerine aktaran backend projesi. PostgreSQL ve OpenSearch tarafı ile
+                    kalıcı veri, arama ve analiz akışlarını destekleyecek şekilde kurgulandı.
+                </p>
+                <div class="tags">
+                    <span class="tag primary">Java</span>
+                    <span class="tag">Kafka</span>
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">OpenSearch</span>
+                    <span class="tag">Docker Compose</span>
+                    <span class="tag">Filebeat</span>
+                    <span class="tag">REST</span>
+                    <span class="tag">CI/CD</span>
+                </div>
+            </article>
+
+            <article class="panel project">
+                <div class="project-kicker">FitnessApp</div>
+                <h3>Spor salonu yönetimi için modüler .NET uygulaması</h3>
+                <p>
+                    Üye, randevu, yönetim paneli ve ortak domain bileşenlerini ayrı katmanlarda ele alan spor salonu
+                    yönetim sistemi. Docker Compose ve GitHub Actions akışıyla geliştirme, test ve yayın süreci
+                    otomasyona bağlandı.
+                </p>
+                <div class="tags">
+                    <span class="tag primary">.NET</span>
+                    <span class="tag primary">C#</span>
+                    <span class="tag">ASP.NET Core</span>
+                    <span class="tag">Docker</span>
+                    <span class="tag">Docker Compose</span>
+                    <span class="tag">GitHub Actions</span>
+                    <span class="tag">Layered Architecture</span>
+                </div>
+            </article>
+
+            <article class="panel project">
+                <div class="project-kicker">Mobilya E-Commerce</div>
+                <h3>Premium mobilya satış deneyimi için full-stack e-commerce sitesi</h3>
+                <p>
+                    React istemci, Express API ve Prisma veri katmanıyla geliştirilen full-stack e-commerce projesi.
+                    Ürün listeleme, kategori yönetimi, admin tarafı ve production deploy akışıyla uçtan uca çalışan
+                    bir web uygulaması olarak tasarlandı.
+                </p>
+                <div class="tags">
+                    <span class="tag primary">React</span>
+                    <span class="tag primary">TypeScript</span>
+                    <span class="tag">Express</span>
+                    <span class="tag">Prisma</span>
+                    <span class="tag">SQLite</span>
+                    <span class="tag">Vercel</span>
+                    <span class="tag">Full-stack</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="section" id="iletisim">
+        <h2 class="section-title">Bağlantılar</h2>
+        <div class="links-list">
+            <a href="https://github.com/kayadogan1" class="panel link-card" target="_blank" rel="noopener">
+                <div>
+                    <div class="link-title">GitHub</div>
+                    <div class="link-meta">github.com/kayadogan1</div>
+                </div>
+                <span class="url-label">Profil</span>
+            </a>
+            <a href="https://www.linkedin.com/in/dogann-kaya" class="panel link-card" target="_blank" rel="noopener">
+                <div>
+                    <div class="link-title">LinkedIn</div>
+                    <div class="link-meta">linkedin.com/in/dogann-kaya</div>
+                </div>
+                <span class="url-label">Profil</span>
+            </a>
+            <a href="mailto:dogann2536@gmail.com" class="panel link-card">
+                <div>
+                    <div class="link-title">E-posta</div>
+                    <div class="link-meta">dogann2536@gmail.com</div>
+                </div>
+                <span class="url-label">İletişim</span>
+            </a>
+        </div>
+    </section>
 
     <footer>
-        © 2024 Doğan Kaya
+        Doğan Kaya - Backend Developer
     </footer>
+</main>
+<script>
+    const simulator = document.querySelector("[data-thread-sim]");
 
+    if (simulator) {
+        const tasksInput = simulator.querySelector("[data-sim-tasks]");
+        const waitInput = simulator.querySelector("[data-sim-wait]");
+        const pinnedInput = simulator.querySelector("[data-sim-pinned]");
+        const tasksValue = simulator.querySelector("[data-tasks-value]");
+        const waitValue = simulator.querySelector("[data-wait-value]");
+        const pinnedValue = simulator.querySelector("[data-pinned-value]");
+        const platformTime = simulator.querySelector("[data-platform-time]");
+        const virtualTime = simulator.querySelector("[data-virtual-time]");
+        const speedup = simulator.querySelector("[data-speedup]");
+        const note = simulator.querySelector("[data-sim-note]");
+
+        const formatSeconds = (milliseconds) => {
+            if (milliseconds < 1000) return `${Math.round(milliseconds)} ms`;
+            return `${(milliseconds / 1000).toFixed(1)} sn`;
+        };
+
+        const updateSimulation = () => {
+            const tasks = Number(tasksInput.value);
+            const wait = Number(waitInput.value);
+            const pinned = Number(pinnedInput.value);
+            const platformWorkers = 120;
+            const carrierWorkers = 8;
+            const virtualOverhead = 18;
+            const platform = Math.ceil(tasks / platformWorkers) * wait;
+            const virtualBase = Math.ceil(tasks / (carrierWorkers * 160)) * (wait + virtualOverhead);
+            const pinnedPenalty = wait * (pinned / 100) * Math.ceil(tasks / carrierWorkers) * 0.06;
+            const virtual = virtualBase + pinnedPenalty;
+            const ratio = Math.max(platform / Math.max(virtual, 1), 1);
+
+            tasksValue.textContent = tasks.toLocaleString("tr-TR");
+            waitValue.textContent = wait;
+            pinnedValue.textContent = pinned;
+            platformTime.textContent = formatSeconds(platform);
+            virtualTime.textContent = formatSeconds(virtual);
+            speedup.textContent = `${ratio.toFixed(1)}x`;
+
+            if (pinned < 20) {
+                note.textContent = "Bloklanan carrier oranı düşükken virtual thread modeli beklemeli işlerde ciddi avantaj sağlar.";
+            } else if (pinned < 50) {
+                note.textContent = "Carrier bloklanması arttıkça avantaj azalır; burada kütüphane ve senkronize blokları kontrol etmek gerekir.";
+            } else {
+                note.textContent = "Carrier'lar çok bloklanıyorsa virtual thread'in hafifliği kaybolur ve performans beklenenden düşük kalır.";
+            }
+        };
+
+        [tasksInput, waitInput, pinnedInput].forEach((input) => {
+            input.addEventListener("input", updateSimulation);
+        });
+
+        updateSimulation();
+    }
+</script>
 </body>
 </html>

@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java Virtual Thread'ler | Doğan Kaya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --page: #f6f8fb;
+            --paper: #ffffff;
+            --ink: #18202b;
+            --muted: #5f6e7f;
+            --soft: #8a98a8;
+            --line: #dce3ec;
+            --line-strong: #c5cfdb;
+            --blue: #2563eb;
+            --blue-soft: #eaf1ff;
+            --green: #0f9f6e;
+            --green-soft: #e8f8f1;
+            --red: #d64545;
+            --red-soft: #fff0f0;
+            --yellow: #a86f00;
+            --yellow-soft: #fff7df;
+            --code: #101827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 14% 0%, rgba(37, 99, 235, 0.12), transparent 34rem),
+                linear-gradient(180deg, #f6f8fb 0%, #eef3f8 100%);
+            color: var(--ink);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            letter-spacing: 0;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page {
+            width: min(100%, 1060px);
+            margin: 0 auto;
+            padding: 28px 18px 70px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 9px 13px;
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.86rem;
+        }
+
+        .author {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.78rem;
+        }
+
+        .hero {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 22px 70px rgba(24, 32, 43, 0.08);
+        }
+
+        .hero-inner {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 30px;
+            align-items: center;
+            padding: clamp(28px, 5vw, 54px);
+        }
+
+        .kicker {
+            display: inline-flex;
+            width: fit-content;
+            border: 1px solid rgba(37, 99, 235, 0.22);
+            border-radius: 999px;
+            padding: 7px 11px;
+            color: var(--blue);
+            background: var(--blue-soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            font-size: clamp(2.15rem, 7vw, 4.5rem);
+            line-height: 0.98;
+            letter-spacing: 0;
+            margin-bottom: 18px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.85;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            border: 1px solid var(--line-strong);
+            border-radius: 999px;
+            padding: 7px 10px;
+            color: var(--muted);
+            background: #fff;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.74rem;
+            font-weight: 600;
+        }
+
+        .tag.blue {
+            border-color: rgba(37, 99, 235, 0.25);
+            color: var(--blue);
+            background: var(--blue-soft);
+        }
+
+        .hero-visual {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background:
+                linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(15, 159, 110, 0.08)),
+                #fbfdff;
+            padding: 18px;
+        }
+
+        .scheduler {
+            display: grid;
+            gap: 13px;
+        }
+
+        .scheduler-row {
+            display: grid;
+            grid-template-columns: 92px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .scheduler-label {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .lane {
+            min-height: 48px;
+            border: 1px dashed var(--line-strong);
+            border-radius: 12px;
+            padding: 9px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .pill {
+            border-radius: 999px;
+            padding: 7px 10px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            border: 1px solid rgba(37, 99, 235, 0.22);
+            background: var(--blue-soft);
+            color: var(--blue);
+        }
+
+        .pill.carrier {
+            border-color: rgba(15, 159, 110, 0.24);
+            background: var(--green-soft);
+            color: var(--green);
+        }
+
+        .pill.blocked {
+            border-color: rgba(214, 69, 69, 0.25);
+            background: var(--red-soft);
+            color: var(--red);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 1fr);
+            gap: 26px;
+            margin-top: 24px;
+            align-items: start;
+        }
+
+        .toc {
+            position: sticky;
+            top: 18px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.78);
+            padding: 16px;
+        }
+
+        .toc h2 {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .toc a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 700;
+            line-height: 1.45;
+            padding: 8px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .article {
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            padding: clamp(24px, 5vw, 52px);
+            box-shadow: 0 22px 70px rgba(24, 32, 43, 0.07);
+        }
+
+        .article section + section {
+            margin-top: 48px;
+        }
+
+        .article h2 {
+            font-size: clamp(1.55rem, 4vw, 2.25rem);
+            line-height: 1.18;
+            margin-bottom: 14px;
+        }
+
+        .article h3 {
+            font-size: 1.05rem;
+            margin: 22px 0 10px;
+        }
+
+        .article p,
+        .article li {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.9;
+        }
+
+        .article p + p {
+            margin-top: 12px;
+        }
+
+        .article strong {
+            color: var(--ink);
+            font-weight: 800;
+        }
+
+        .article ul {
+            display: grid;
+            gap: 9px;
+            margin: 14px 0 0 22px;
+        }
+
+        .callout {
+            border: 1px solid rgba(37, 99, 235, 0.22);
+            border-radius: 14px;
+            background: var(--blue-soft);
+            padding: 18px;
+            margin: 18px 0;
+        }
+
+        .callout.warning {
+            border-color: rgba(168, 111, 0, 0.24);
+            background: var(--yellow-soft);
+        }
+
+        .callout.danger {
+            border-color: rgba(214, 69, 69, 0.22);
+            background: var(--red-soft);
+        }
+
+        .callout-title {
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin: 18px 0;
+        }
+
+        .card {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 18px;
+            background: #fbfdff;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .term-list {
+            display: grid;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .term {
+            border-left: 4px solid var(--blue);
+            background: #f8fbff;
+            border-radius: 10px;
+            padding: 13px 15px;
+        }
+
+        .term strong {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .code-notes {
+            display: grid;
+            gap: 10px;
+            margin: -4px 0 20px;
+        }
+
+        .code-note {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: #fbfdff;
+            padding: 13px 15px;
+            color: var(--muted);
+            line-height: 1.7;
+            font-size: 0.92rem;
+        }
+
+        .code-note strong {
+            color: var(--ink);
+        }
+
+        .compare {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .version {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fbfdff;
+        }
+
+        .version h3 {
+            margin: 0;
+            padding: 15px 16px;
+            background: #f0f5fb;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .version-body {
+            padding: 16px;
+        }
+
+        .code {
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--code);
+            margin: 18px 0;
+            border: 1px solid #223047;
+        }
+
+        .code-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 14px;
+            color: #a9b8ca;
+            border-bottom: 1px solid #223047;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.76rem;
+        }
+
+        pre {
+            overflow-x: auto;
+            padding: 18px;
+            color: #e7eefb;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+        }
+
+        .diagram-box {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            background: #fbfdff;
+            margin: 18px 0;
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch;
+            margin-top: 12px;
+        }
+
+        .flow-step {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 14px;
+            background: #fff;
+            text-align: center;
+        }
+
+        .flow-step strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .simulator {
+            border: 1px solid rgba(37, 99, 235, 0.24);
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ffffff, #f2f7ff);
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .simulator h3 {
+            margin-top: 0;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .control label {
+            display: block;
+            color: var(--muted);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.76rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .control input {
+            width: 100%;
+            accent-color: var(--blue);
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric {
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            background: #fff;
+            padding: 16px;
+        }
+
+        .metric-value {
+            color: var(--blue);
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: var(--muted);
+            line-height: 1.5;
+            font-size: 0.82rem;
+        }
+
+        .sources {
+            margin-top: 42px;
+            border-top: 1px solid var(--line);
+            padding-top: 22px;
+        }
+
+        .sources a {
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        @media (max-width: 820px) {
+            .page {
+                padding: 22px 16px 56px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            h1 {
+                font-size: clamp(2rem, 10vw, 3rem);
+                line-height: 1.06;
+            }
+
+            .hero-inner,
+            .content,
+            .cards,
+            .compare,
+            .controls,
+            .results {
+                grid-template-columns: 1fr;
+            }
+
+            .toc {
+                position: static;
+            }
+
+            .flow {
+                grid-template-columns: 1fr;
+            }
+
+            .scheduler-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="page">
+    <nav class="topbar">
+        <a class="back-link" href="deneme.html#blog">Portfolyoya dön</a>
+        <div class="author">Doğan Kaya / Java Notes</div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="kicker">Java Concurrency</div>
+                <h1>Virtual Thread'ler: Java 21'den Java 24'e carrier thread meselesi</h1>
+                <p>
+                    Thread kavramını hiç bilmeyen biri için en baştan başlayıp, Java'da thread nasıl kullanılır,
+                    virtual thread neyi değiştirir, carrier thread neden bloklanır ve Java 24 ile ne iyileşti adım adım.
+                </p>
+            </div>
+            <div class="hero-visual" aria-label="Virtual thread görseli">
+                <div class="scheduler">
+                    <div class="scheduler-row">
+                        <div class="scheduler-label">Tasks</div>
+                        <div class="lane">
+                            <span class="pill">Request-1</span>
+                            <span class="pill">Request-2</span>
+                            <span class="pill">Request-3</span>
+                            <span class="pill">Request-10k</span>
+                        </div>
+                    </div>
+                    <div class="scheduler-row">
+                        <div class="scheduler-label">Virtual</div>
+                        <div class="lane">
+                            <span class="pill">VT-1</span>
+                            <span class="pill">VT-2</span>
+                            <span class="pill">VT-3</span>
+                            <span class="pill">VT-...</span>
+                        </div>
+                    </div>
+                    <div class="scheduler-row">
+                        <div class="scheduler-label">Carrier</div>
+                        <div class="lane">
+                            <span class="pill carrier">OS-1</span>
+                            <span class="pill carrier">OS-2</span>
+                            <span class="pill carrier">OS-3</span>
+                        </div>
+                    </div>
+                    <div class="scheduler-row">
+                        <div class="scheduler-label">Risk</div>
+                        <div class="lane">
+                            <span class="pill blocked">Pinned carrier</span>
+                            <span class="pill blocked">Queue grows</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <aside class="toc">
+            <h2>Konu</h2>
+            <a href="#thread">Thread modelinin temeli</a>
+            <a href="#java-thread">Java platform thread modeli</a>
+            <a href="#virtual-thread">Virtual thread API kullanımı</a>
+            <a href="#carrier">Carrier thread ve pinning</a>
+            <a href="#java-21-24">Java 21 ve Java 24 farkı</a>
+            <a href="#semaphore">Semaphore ile sınırlandırma</a>
+            <a href="#simulator">Performans simülasyonu</a>
+        </aside>
+
+        <article class="article">
+            <section id="thread">
+                <h2>1. Eşzamanlı programlamanın temeli: thread, process ve çalışma birimi</h2>
+                <p>
+                    Program dediğimiz şey aslında bilgisayara verilen işlerin toplamı. Mesela bir web sunucusu aynı anda
+                    kullanıcıdan istek alır, veritabanına gider, dosya okur, başka bir servise HTTP isteği atar ve cevap
+                    üretir. <strong>Thread</strong>, bu işlerden birini yürüten çalışma hattıdır.
+                </p>
+                <p>
+                    Basit düşünelim: Bir restoran var. Sipariş almak, yemeği hazırlamak ve hesabı kapatmak farklı işler.
+                    Tek çalışan varsa herkes sırada bekler. Birden fazla çalışan varsa işler paralel yürür. Thread de
+                    program içindeki çalışan gibidir.
+                </p>
+
+                <div class="cards">
+                    <div class="card">
+                        <h3>Process</h3>
+                        <p>Uygulamanın kendisi. Belleği, kaynakları ve çalışma alanı vardır.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Thread</h3>
+                        <p>Process içindeki çalışma yolu. Aynı process içinde birden fazla thread olabilir.</p>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">En kısa tanım</div>
+                    <p>Thread, programın aynı anda birden fazla işi yürütmesini sağlayan çalışma birimidir.</p>
+                </div>
+
+                <div class="term-list">
+                    <div class="term">
+                        <strong>Concurrency</strong>
+                        Birden fazla işin aynı zaman aralığında ilerlemesidir. Tek CPU çekirdeğinde bile işler sırayla
+                        küçük parçalara bölünüp ilerleyebilir.
+                    </div>
+                    <div class="term">
+                        <strong>Parallelism</strong>
+                        Birden fazla işin gerçekten aynı anda, farklı CPU çekirdeklerinde çalışmasıdır.
+                    </div>
+                    <div class="term">
+                        <strong>Blocking</strong>
+                        Thread'in bir cevabı beklerken ilerleyememesidir. Database, HTTP veya dosya I/O sırasında sık görülür.
+                    </div>
+                </div>
+            </section>
+
+            <section id="java-thread">
+                <h2>2. Java'da platform thread modeli: Thread sınıfı, lifecycle ve thread pool kullanımı</h2>
+                <p>
+                    Java'da yıllardır kullandığımız klasik thread modeli <strong>platform thread</strong> modelidir.
+                    Platform thread, Java tarafındaki `Thread` nesnesinin işletim sistemi thread'iyle eşleşmesi demektir.
+                    Yani pahalı bir kaynaktır: stack belleği ayırır, oluşturması maliyetlidir ve sayısı sınırlıdır.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Platform thread</span><span>Java</span></div>
+                    <pre><code>public class PlatformThreadExample {
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            System.out.println("Bu iş ayrı bir platform thread üzerinde çalışır");
+        });
+
+        thread.start();
+        thread.join();
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-notes">
+                    <div class="code-note">
+                        <strong>Thread</strong> Java'nın temel çalışma hattı sınıfıdır. Buradaki `new Thread(...)`
+                        işletim sistemi tarafından yönetilen bir platform thread oluşturur. `Thread` sınıfı
+                        `java.lang` paketindedir; bu yüzden ayrıca import yazmana gerek yoktur.
+                    </div>
+                    <div class="code-note">
+                        <strong>start()</strong> thread'i gerçekten başlatır. Sadece `run()` çağırırsan yeni thread açılmaz,
+                        kod mevcut thread üzerinde normal method gibi çalışır.
+                    </div>
+                    <div class="code-note">
+                        <strong>join()</strong> ana thread'in diğer thread bitene kadar beklemesini sağlar. Örneklerde
+                        sonucu görmek ve programın hemen kapanmasını engellemek için kullanılır.
+                    </div>
+                </div>
+
+                <p>
+                    Daha gerçek hayatta her istek için elle `new Thread()` açmayız. Bunun yerine thread pool kullanırız.
+                    Pool, sınırlı sayıda thread tutar ve gelen işleri bu thread'lere dağıtır.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Thread pool</span><span>Java</span></div>
+                    <pre><code>import java.util.concurrent.Executors;
+
+public class ThreadPoolExample {
+    public static void main(String[] args) {
+        try (var executor = Executors.newFixedThreadPool(100)) {
+            for (int i = 0; i < 1000; i++) {
+                executor.submit(() -> {
+                    callDatabase();
+                    return "ok";
+                });
+            }
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-notes">
+                    <div class="code-note">
+                        <strong>import java.util.concurrent.Executors;</strong> thread pool ve executor factory
+                        methodlarını kullanmak için gerekir.
+                    </div>
+                    <div class="code-note">
+                        <strong>Executors.newFixedThreadPool(100)</strong> en fazla 100 platform thread çalıştırır.
+                        101. iş gelirse sırada bekler.
+                    </div>
+                    <div class="code-note">
+                        <strong>executor.submit(...)</strong> işi pool'a verir. Pool boş thread bulursa çalıştırır,
+                        yoksa kuyruğa alır.
+                    </div>
+                    <div class="code-note">
+                        <strong>callDatabase()</strong> burada temsili bir methoddur. Gerçek projede bu satır JDBC,
+                        Hibernate, JPA repository veya HTTP client çağrısı olabilir.
+                    </div>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Problem nerede?</div>
+                    <p>
+                        Thread pool'daki 100 thread'in tamamı veritabanı cevabı bekliyorsa, CPU boş olsa bile yeni işler
+                        sırada kalır. Çünkü thread'ler çalışmıyor gibi görünse de bekleme sırasında tutulur.
+                    </p>
+                </div>
+            </section>
+
+            <section id="virtual-thread">
+                <h2>3. Virtual thread modeli: JVM tarafından yönetilen hafif thread yaklaşımı</h2>
+                <p>
+                    <strong>Virtual thread</strong>, Java'nın JDK tarafında yönettiği hafif thread modelidir. Kod yazarken
+                    yine thread gibi düşünürsün: iş başlar, bekler, devam eder, biter. Fakat işletim sistemi tarafında
+                    her virtual thread için ayrı bir OS thread tutulmaz.
+                </p>
+                <p>
+                    Bu özellikle backend için büyük farktır. Çünkü backend işlerinin çoğu CPU hesabı değil,
+                    <strong>I/O bekleme</strong> işidir: database, HTTP, dosya, queue, cache. Virtual thread beklemeye
+                    girince JVM onu askıya alabilir ve alttaki gerçek thread'i başka işe verebilir.
+                </p>
+
+                <div class="diagram-box">
+                    <h3>Virtual thread çalışma akışı</h3>
+                    <div class="flow">
+                        <div class="flow-step"><strong>1</strong><p>Request gelir</p></div>
+                        <div class="flow-step"><strong>2</strong><p>Virtual thread açılır</p></div>
+                        <div class="flow-step"><strong>3</strong><p>DB beklenir</p></div>
+                        <div class="flow-step"><strong>4</strong><p>Carrier boşa çıkar</p></div>
+                        <div class="flow-step"><strong>5</strong><p>Cevap dönülür</p></div>
+                    </div>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>Virtual thread ile task çalıştırma</span><span>Java 21+</span></div>
+                    <pre><code>import java.time.Duration;
+import java.util.concurrent.Executors;
+
+public class VirtualThreadExecutorExample {
+    public static void main(String[] args) {
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 0; i < 10_000; i++) {
+                executor.submit(() -> {
+                    Thread.sleep(Duration.ofMillis(200));
+                    return "ok";
+                });
+            }
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-notes">
+                    <div class="code-note">
+                        <strong>import java.time.Duration;</strong> bekleme süresini okunabilir yazmak için kullanılır.
+                        `Duration.ofMillis(200)` ifadesi 200 milisaniyelik beklemeyi temsil eder.
+                    </div>
+                    <div class="code-note">
+                        <strong>Executors.newVirtualThreadPerTaskExecutor()</strong> her task için yeni bir virtual thread
+                        açar. Platform thread pool'daki gibi 100 thread sınırı koymaz; JVM virtual thread'leri carrier
+                        thread'ler üzerinde planlar.
+                    </div>
+                    <div class="code-note">
+                        <strong>try-with-resources</strong> executor'ın kapanmasını garanti eder. Java 21'de executor
+                        `AutoCloseable` olduğu için bu kullanım temiz ve güvenlidir.
+                    </div>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>Tek virtual thread oluşturma</span><span>Java 21+</span></div>
+                    <pre><code>public class SingleVirtualThreadExample {
+    public static void main(String[] args) throws InterruptedException {
+        Thread worker = Thread.startVirtualThread(() -> {
+            System.out.println("Bu kod virtual thread üzerinde çalışıyor");
+        });
+
+        worker.join();
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-notes">
+                    <div class="code-note">
+                        <strong>Thread.startVirtualThread(...)</strong> tek seferlik, basit işler için pratik bir API'dir.
+                        Bir web request modeli kuruyorsan genelde executor yaklaşımı daha düzenlidir.
+                    </div>
+                    <div class="code-note">
+                        <strong>worker.join()</strong> burada sadece demo için var. Ana thread beklemezse program virtual
+                        thread çıktısını görmeden bitebilir.
+                    </div>
+                </div>
+
+                <h3>Platform thread ile virtual thread arasındaki davranış farkı</h3>
+                <ul>
+                    <li><strong>Platform thread:</strong> OS thread'e bağlıdır, pahalıdır, sayısı sınırlıdır.</li>
+                    <li><strong>Virtual thread:</strong> JVM tarafından yönetilir, hafiftir, çok yüksek sayılara çıkabilir.</li>
+                    <li><strong>Platform thread:</strong> uzun CPU işleri için hâlâ doğrudur.</li>
+                    <li><strong>Virtual thread:</strong> çok sayıda beklemeli backend işi için çok uygundur.</li>
+                </ul>
+            </section>
+
+            <section id="carrier">
+                <h2>4. Carrier thread, mounting/unmounting ve pinning probleminin mekanizması</h2>
+                <p>
+                    Virtual thread kendi başına işlemcide koşmaz. Onu gerçekten çalıştıran alttaki platform thread'e
+                    <strong>carrier thread</strong> denir. JVM, çok sayıda virtual thread'i daha az sayıda carrier thread
+                    üstünde taşır.
+                </p>
+                <p>
+                    Normal durumda virtual thread I/O beklerken carrier thread'i bırakır. Böylece carrier başka virtual
+                    thread'i çalıştırabilir. Ama bazı durumlarda virtual thread carrier'ı bırakamaz. Buna
+                    <strong>pinning</strong> denir.
+                </p>
+
+                <div class="term-list">
+                    <div class="term">
+                        <strong>Mounting</strong>
+                        Virtual thread'in bir carrier thread üzerine yerleştirilip çalışmaya başlamasıdır.
+                    </div>
+                    <div class="term">
+                        <strong>Unmounting</strong>
+                        Virtual thread'in beklemeye geçerken carrier thread'i bırakmasıdır. Virtual thread'in ölçeklenmesini
+                        sağlayan kritik davranış budur.
+                    </div>
+                    <div class="term">
+                        <strong>Pinning</strong>
+                        Virtual thread'in beklese bile carrier thread'i bırakamamasıdır. Bu olduğunda hafif thread modeli
+                        platform thread darboğazına yaklaşır.
+                    </div>
+                </div>
+
+                <div class="diagram-box">
+                    <h3>İyi durum ve kötü durum</h3>
+                    <div class="scheduler">
+                        <div class="scheduler-row">
+                            <div class="scheduler-label">İyi</div>
+                            <div class="lane">
+                                <span class="pill">VT bekler</span>
+                                <span class="pill carrier">Carrier serbest</span>
+                                <span class="pill">Başka VT çalışır</span>
+                            </div>
+                        </div>
+                        <div class="scheduler-row">
+                            <div class="scheduler-label">Kötü</div>
+                            <div class="lane">
+                                <span class="pill">VT bekler</span>
+                                <span class="pill blocked">Carrier pinned</span>
+                                <span class="pill blocked">İşler kuyrukta</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>Java 21'de riskli örnek</span><span>synchronized</span></div>
+                    <pre><code>import java.time.Duration;
+
+class SlowService {
+    synchronized String load() throws InterruptedException {
+        // Java 21'de virtual thread burada beklerse carrier thread'i de tutabilir.
+        Thread.sleep(Duration.ofSeconds(2));
+        return "done";
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-notes">
+                    <div class="code-note">
+                        <strong>synchronized</strong> Java monitor mekanizmasını kullanır. Java 21'de virtual thread bir
+                        monitor içindeyken bloklanırsa carrier thread'e pinned kalabilir.
+                    </div>
+                    <div class="code-note">
+                        <strong>Thread.sleep(...)</strong> normalde virtual thread'i askıya alabilir. Ancak sleep veya I/O
+                        synchronized bölgenin içindeyse Java 21'de carrier'ın serbest kalması engellenebilir.
+                    </div>
+                    <div class="code-note">
+                        <strong>Çözüm yaklaşımı</strong> Java 21 kullanıyorsan uzun beklemeleri synchronized blokların dışına
+                        almak, `ReentrantLock` veya concurrent koleksiyonlar gibi modern araçları tercih etmek daha sağlıklıdır.
+                    </div>
+                </div>
+
+                <div class="callout danger">
+                    <div class="callout-title">Performans kaybı neden olur?</div>
+                    <p>
+                        8 carrier thread olduğunu düşün. 8 virtual thread synchronized blok içinde beklerken carrier'ları
+                        bırakmazsa, sistemde binlerce virtual thread olsa bile çalıştıracak carrier kalmayabilir.
+                        Sonuç: throughput düşer, latency artar, bazı senaryolarda açlık veya kilitlenmeye benzeyen
+                        davranışlar görülür.
+                    </p>
+                </div>
+            </section>
+
+            <section id="java-21-24">
+                <h2>5. Java 21 ve Java 24 karşılaştırması: final virtual thread desteğinden synchronized pinning iyileştirmesine</h2>
+                <p>
+                    Java 21, virtual thread'leri final hale getirdi. Yani artık preview değil, gerçek production özelliği.
+                    Fakat Java 21'de önemli bir dikkat noktası vardı: virtual thread, `synchronized` method/blok içinde
+                    bloklanırsa carrier thread'e pinned kalabiliyordu.
+                </p>
+                <p>
+                    Java 24 ile gelen JEP 491 bu konuda büyük bir iyileştirme yaptı: virtual thread'lerin monitor yani
+                    `synchronized` kullanımında carrier'a pinned kalmadan çalışabilmesi hedeflendi. Bu, eski Java kodlarını
+                    virtual thread ile kullanırken önemli bir rahatlama sağlar.
+                </p>
+
+                <div class="compare">
+                    <div class="version">
+                        <h3>Java 21</h3>
+                        <div class="version-body">
+                            <ul>
+                                <li>Virtual thread final özelliktir.</li>
+                                <li>`synchronized` içinde bloklama pinning oluşturabilir.</li>
+                                <li>Uzun bekleme varsa carrier thread tutulabilir.</li>
+                                <li>Yoğun trafikte performans kaybı görülebilir.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="version">
+                        <h3>Java 24</h3>
+                        <div class="version-body">
+                            <ul>
+                                <li>JEP 491 ile synchronized pinning sorunu iyileştirilir.</li>
+                                <li>Monitor kullanımı virtual thread'lerle daha uyumlu hale gelir.</li>
+                                <li>Kod değişmeden daha iyi ölçeklenme alınabilir.</li>
+                                <li>Native/foreign çağrılar hâlâ dikkat ister.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Önemli nüans</div>
+                    <p>
+                        Java 24 "artık her şey sınırsız hızlı" demek değildir. CPU-bound işleri virtual thread hızlandırmaz.
+                        Virtual thread'in güçlü olduğu yer, çok sayıda beklemeli I/O işidir.
+                    </p>
+                </div>
+
+                <h3>Performans kaybını nasıl okumak gerekir?</h3>
+                <p>
+                    Java 21 ile Java 24 arasındaki farkı "Java 21 yavaş, Java 24 hızlı" diye okumak doğru olmaz.
+                    Doğru okuma şudur: Eğer uygulamada virtual thread'ler sık sık `synchronized` içinde bloklanıyorsa,
+                    Java 21'de carrier thread'ler tutulabilir ve concurrency düşer. Java 24 bu özel durumda daha iyi
+                    davranır. Ancak uygulama zaten synchronized içinde beklemiyorsa veya iş CPU-bound ise fark sınırlı
+                    olabilir.
+                </p>
+
+                <div class="term-list">
+                    <div class="term">
+                        <strong>I/O-bound senaryo</strong>
+                        HTTP, database, cache veya queue bekleyen işlerde virtual thread anlamlı kazanç sağlayabilir.
+                    </div>
+                    <div class="term">
+                        <strong>CPU-bound senaryo</strong>
+                        Ağır hesaplama yapan işlerde virtual thread daha fazla CPU üretmez; burada çekirdek sayısı ve
+                        algoritma belirleyicidir.
+                    </div>
+                    <div class="term">
+                        <strong>Pinning-heavy senaryo</strong>
+                        Java 21'de synchronized içinde bekleyen çok iş varsa carrier thread darboğazı oluşabilir; Java 24
+                        bu riski azaltır.
+                    </div>
+                </div>
+            </section>
+
+            <section id="semaphore">
+                <h2>6. Semaphore kullanımı: virtual thread çokluğunu dış kaynak kapasitesiyle dengelemek</h2>
+                <p>
+                    Virtual thread çok hafif diye her şeyi sınırsız açmak iyi fikir değildir. Veritabanı connection pool'un
+                    50 ise, aynı anda 10.000 sorguyu database'e yığmak sistemi boğar. Burada <strong>Semaphore</strong>
+                    kullanarak aynı anda kaç işin kritik kaynağa gireceğini sınırlarsın.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Virtual thread + Semaphore</span><span>Java</span></div>
+                    <pre><code>import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+
+public class VirtualThreadSemaphoreExample {
+    public static void main(String[] args) {
+        var databaseLimit = new Semaphore(50);
+
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 0; i < 10_000; i++) {
+                executor.submit(() -> {
+                    databaseLimit.acquire();
+                    try {
+                        return queryDatabase();
+                    } finally {
+                        databaseLimit.release();
+                    }
+                });
+            }
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-notes">
+                    <div class="code-note">
+                        <strong>import java.util.concurrent.Semaphore;</strong> aynı anda kaç işin kritik bölgeye gireceğini
+                        sınırlamak için gerekir.
+                    </div>
+                    <div class="code-note">
+                        <strong>new Semaphore(50)</strong> aynı anda 50 izin demektir. Burada örnek olarak database'e aynı
+                        anda en fazla 50 iş göndermeyi temsil eder.
+                    </div>
+                    <div class="code-note">
+                        <strong>acquire()</strong> izin yoksa bekler. Virtual thread beklerken genelde ucuz şekilde askıya
+                        alınabilir; bu yüzden semaphore virtual thread ile uyumlu bir sınırlama aracıdır.
+                    </div>
+                    <div class="code-note">
+                        <strong>finally içinde release()</strong> kritik önemdedir. Hata olsa bile izin geri verilmezse
+                        sistem zamanla kilitlenir.
+                    </div>
+                </div>
+
+                <p>
+                    Buradaki fikir şu: 10.000 virtual thread açabilirsin, ama aynı anda sadece 50 tanesi database'e gider.
+                    Diğerleri bekler. Virtual thread beklemeyi ucuz hale getirir; semaphore ise dış kaynakları korur.
+                </p>
+
+                <div class="callout warning">
+                    <div class="callout-title">Java 21 performans notu</div>
+                    <p>
+                        Java 21'de sorun daha çok `synchronized`/monitor pinning tarafındadır. `Semaphore` gibi
+                        `java.util.concurrent` araçları virtual thread'lerle daha uygun bir bekleme modeli sunar.
+                        Yine de limitleri doğru seçmezsen sistem yavaşlar; çünkü dış kaynak zaten sınırlıdır.
+                    </p>
+                </div>
+            </section>
+
+            <section id="simulator">
+                <h2>7. Mini demo: pinning ve limitler performansı nasıl etkiler?</h2>
+                <p>
+                    Bu gerçek benchmark değil; kavramı zihinde oturtmak için basit bir model. İş sayısını, bekleme
+                    süresini ve Java 21'deki pinning oranını değiştir. Java 24 tarafında synchronized pinning etkisini
+                    azaltılmış kabul ediyoruz.
+                </p>
+
+                <div class="simulator" data-thread-sim>
+                    <h3>Virtual thread simülatörü</h3>
+                    <div class="controls">
+                        <div class="control">
+                            <label for="tasks">İş sayısı: <span data-tasks-value>2000</span></label>
+                            <input id="tasks" type="range" min="200" max="20000" step="200" value="2000" data-tasks>
+                        </div>
+                        <div class="control">
+                            <label for="wait">I/O bekleme: <span data-wait-value>200</span> ms</label>
+                            <input id="wait" type="range" min="20" max="1000" step="20" value="200" data-wait>
+                        </div>
+                        <div class="control">
+                            <label for="pinning">Java 21 pinning: <span data-pinning-value>25</span>%</label>
+                            <input id="pinning" type="range" min="0" max="90" step="5" value="25" data-pinning>
+                        </div>
+                    </div>
+                    <div class="results">
+                        <div class="metric">
+                            <div class="metric-value" data-java21>--</div>
+                            <div class="metric-label">Java 21 tahmini süre</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" data-java24>--</div>
+                            <div class="metric-label">Java 24 tahmini süre</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value" data-loss>--</div>
+                            <div class="metric-label">Pinning kaynaklı fark</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h2>Sonuç</h2>
+                <p>
+                    Virtual thread, Java backend tarafında "okunabilir kod + yüksek concurrency" dengesini çok güçlendirdi.
+                    Java 21 ile production hayatına girdi; Java 24 ile synchronized kaynaklı carrier pinning problemi
+                    önemli ölçüde azaltıldı. Pratikte iyi kullanım şudur: I/O ağırlıklı işlerde virtual thread kullan,
+                    dış kaynakları semaphore veya pool limitleriyle koru, CPU-bound işleri ayrı ele al ve production'da
+                    JFR/observability ile pinning davranışını izle.
+                </p>
+            </section>
+
+            <section class="sources">
+                <h2>Kaynaklar</h2>
+                <ul>
+                    <li><a href="https://openjdk.org/jeps/444" target="_blank" rel="noopener">OpenJDK JEP 444: Virtual Threads</a></li>
+                    <li><a href="https://openjdk.org/jeps/491" target="_blank" rel="noopener">OpenJDK JEP 491: Synchronize Virtual Threads without Pinning</a></li>
+                </ul>
+            </section>
+        </article>
+    </div>
+</main>
+
+<script>
+    const simulator = document.querySelector("[data-thread-sim]");
+
+    if (simulator) {
+        const tasksInput = simulator.querySelector("[data-tasks]");
+        const waitInput = simulator.querySelector("[data-wait]");
+        const pinningInput = simulator.querySelector("[data-pinning]");
+        const tasksValue = simulator.querySelector("[data-tasks-value]");
+        const waitValue = simulator.querySelector("[data-wait-value]");
+        const pinningValue = simulator.querySelector("[data-pinning-value]");
+        const java21 = simulator.querySelector("[data-java21]");
+        const java24 = simulator.querySelector("[data-java24]");
+        const loss = simulator.querySelector("[data-loss]");
+
+        const format = (ms) => {
+            if (ms < 1000) return `${Math.round(ms)} ms`;
+            return `${(ms / 1000).toFixed(1)} sn`;
+        };
+
+        const update = () => {
+            const tasks = Number(tasksInput.value);
+            const wait = Number(waitInput.value);
+            const pinning = Number(pinningInput.value);
+            const carriers = 8;
+            const virtualBatch = carriers * 180;
+            const base = Math.ceil(tasks / virtualBatch) * (wait + 18);
+            const java21Penalty = Math.ceil(tasks / carriers) * wait * (pinning / 100) * 0.045;
+            const java24Penalty = Math.ceil(tasks / carriers) * wait * 0.015;
+            const java21Time = base + java21Penalty;
+            const java24Time = base + java24Penalty;
+            const difference = Math.max(java21Time / Math.max(java24Time, 1), 1);
+
+            tasksValue.textContent = tasks.toLocaleString("tr-TR");
+            waitValue.textContent = wait;
+            pinningValue.textContent = pinning;
+            java21.textContent = format(java21Time);
+            java24.textContent = format(java24Time);
+            loss.textContent = `${difference.toFixed(1)}x`;
+        };
+
+        [tasksInput, waitInput, pinningInput].forEach((input) => {
+            input.addEventListener("input", update);
+        });
+
+        update();
+    }
+</script>
+</body>
+</html>
