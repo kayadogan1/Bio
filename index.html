@@ -8,17 +8,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0d12;
-            --surface: #11161d;
-            --surface-soft: #151b23;
-            --line: #27313d;
-            --line-strong: #384554;
-            --text: #eef3f8;
-            --muted: #9aa7b4;
-            --soft: #748291;
-            --accent: #6aa6ff;
-            --accent-soft: rgba(106, 166, 255, 0.13);
-            --success: #5ac17b;
+            --bg: #f4f7fb;
+            --surface: #ffffff;
+            --surface-soft: #f8fbff;
+            --line: #dce4ee;
+            --line-strong: #bdc9d8;
+            --text: #152033;
+            --muted: #5b6878;
+            --soft: #8290a1;
+            --accent: #2563eb;
+            --accent-soft: rgba(37, 99, 235, 0.10);
+            --success: #0f9f6e;
+            --success-soft: rgba(15, 159, 110, 0.10);
         }
 
         * {
@@ -34,8 +35,9 @@
         body {
             min-height: 100vh;
             background:
-                radial-gradient(circle at top left, rgba(106, 166, 255, 0.10), transparent 34rem),
-                linear-gradient(180deg, #0a0d12 0%, #0d1117 100%);
+                radial-gradient(circle at 8% 0%, rgba(37, 99, 235, 0.13), transparent 34rem),
+                radial-gradient(circle at 96% 10%, rgba(15, 159, 110, 0.09), transparent 28rem),
+                linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
             color: var(--text);
             font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             letter-spacing: 0;
@@ -46,7 +48,7 @@
         }
 
         .wrapper {
-            width: min(100%, 920px);
+            width: min(100%, 980px);
             margin: 0 auto;
             padding: 56px 20px 72px;
         }
@@ -64,7 +66,8 @@
             height: 96px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid var(--line-strong);
+            border: 4px solid #ffffff;
+            box-shadow: 0 16px 40px rgba(21, 32, 51, 0.14);
             background: var(--surface);
         }
 
@@ -77,7 +80,7 @@
             border-radius: 999px;
             padding: 5px 11px;
             color: var(--success);
-            background: rgba(90, 193, 123, 0.08);
+            background: var(--success-soft);
             font-family: "JetBrains Mono", monospace;
             font-size: 0.72rem;
             font-weight: 500;
@@ -107,7 +110,7 @@
         }
 
         .lead strong {
-            color: var(--text);
+            color: var(--accent);
             font-weight: 650;
         }
 
@@ -123,7 +126,7 @@
             border-radius: 8px;
             padding: 9px 12px;
             color: var(--text);
-            background: rgba(17, 22, 29, 0.78);
+            background: rgba(255, 255, 255, 0.78);
             text-decoration: none;
             font-size: 0.85rem;
             font-weight: 600;
@@ -145,7 +148,7 @@
             align-items: center;
             gap: 12px;
             margin-bottom: 14px;
-            color: var(--soft);
+            color: #526176;
             font-family: "JetBrains Mono", monospace;
             font-size: 0.74rem;
             font-weight: 600;
@@ -162,8 +165,9 @@
 
         .panel {
             border: 1px solid var(--line);
-            border-radius: 8px;
-            background: rgba(17, 22, 29, 0.82);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 18px 50px rgba(21, 32, 51, 0.07);
         }
 
         .about {
@@ -207,12 +211,14 @@
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
             padding: 16px;
+            border-color: rgba(37, 99, 235, 0.22);
+            box-shadow: 0 24px 70px rgba(37, 99, 235, 0.10);
         }
 
         .stack-group {
             border: 1px solid var(--line);
-            border-radius: 8px;
-            background: rgba(21, 27, 35, 0.72);
+            border-radius: 12px;
+            background: var(--surface-soft);
             padding: 16px;
         }
 
@@ -233,7 +239,7 @@
             border-radius: 6px;
             padding: 6px 9px;
             color: var(--muted);
-            background: rgba(10, 13, 18, 0.28);
+            background: #ffffff;
             font-family: "JetBrains Mono", monospace;
             font-size: 0.72rem;
             line-height: 1.2;
@@ -325,10 +331,11 @@
 
         .blog-feature {
             padding: 22px;
-            border-color: rgba(106, 166, 255, 0.34);
+            border-color: rgba(37, 99, 235, 0.28);
             background:
-                linear-gradient(135deg, rgba(106, 166, 255, 0.14), rgba(17, 22, 29, 0.86) 42%),
-                rgba(17, 22, 29, 0.86);
+                linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(255, 255, 255, 0.96) 42%),
+                #ffffff;
+            box-shadow: 0 22px 60px rgba(37, 99, 235, 0.12);
         }
 
         .blog-feature h3 {
@@ -375,7 +382,7 @@
 
         .blog-card[aria-disabled="true"]:hover {
             border-color: var(--line);
-            background: rgba(17, 22, 29, 0.82);
+            background: rgba(255, 255, 255, 0.92);
             transform: none;
         }
 
@@ -654,33 +661,41 @@
         </div>
     </header>
 
-    <section class="section" id="hakkimda">
-        <h2 class="section-title">Hakkımda</h2>
-        <div class="panel about">
-            <p>
-                Backend tarafında yalnızca endpoint yazmaya değil, sistemin üretimde nasıl davranacağına da odaklanıyorum.
-                Temiz kod, okunabilir mimari, DDD yaklaşımı, test edilebilir servisler ve gözlemlenebilirlik benim için
-                günlük geliştirme pratiğinin parçası. Spring Boot ve .NET Core ile çalışırken veritabanı tasarımından
-                CI/CD akışlarına kadar ürünün tamamını düşünen bir geliştirme tarzını seviyorum.
-            </p>
-        </div>
-    </section>
-
-    <section class="section" aria-label="Özet bilgiler">
-        <h2 class="section-title">Kısa Özet</h2>
-        <div class="stats">
-            <div class="panel stat">
-                <div class="stat-value">3+</div>
-                <div class="stat-label">Yıl deneyim</div>
-            </div>
-            <div class="panel stat">
-                <div class="stat-value">10+</div>
-                <div class="stat-label">Proje</div>
-            </div>
-            <div class="panel stat">
-                <div class="stat-value">2</div>
-                <div class="stat-label">Ana stack</div>
-            </div>
+    <section class="section" id="blog">
+        <h2 class="section-title">Blog Yazıları</h2>
+        <div class="blog-list">
+            <a class="panel blog-card blog-feature" href="blog-virtual-threads.html">
+                <div>
+                    <div class="blog-title">Java Virtual Thread'ler: Java 21'den Java 24'e carrier thread meselesi</div>
+                    <div class="blog-meta">
+                        Thread modeli, virtual thread API'leri, carrier pinning, semaphore ve performans davranışını
+                        sıfırdan anlatan detaylı Java concurrency yazısı.
+                    </div>
+                    <div class="blog-meta-row">
+                        <span class="tag primary">Java 21</span>
+                        <span class="tag">Java 24</span>
+                        <span class="tag">Virtual Threads</span>
+                        <span class="tag">Performance</span>
+                    </div>
+                </div>
+                <span class="url-label">Oku</span>
+            </a>
+            <a class="panel blog-card blog-feature" href="blog-otel-grafana.html">
+                <div>
+                    <div class="blog-title">Spring Boot 4 ile OpenTelemetry ve Grafana Observability</div>
+                    <div class="blog-meta">
+                        Metrics, traces ve logs sinyallerini okuyarak uygulama performansını ölçme, yorumlama ve
+                        multithreaded ortamlarda context kaybını önleme rehberi.
+                    </div>
+                    <div class="blog-meta-row">
+                        <span class="tag primary">Spring Boot 4</span>
+                        <span class="tag">OpenTelemetry</span>
+                        <span class="tag">Grafana</span>
+                        <span class="tag">Tracing</span>
+                    </div>
+                </div>
+                <span class="url-label">Oku</span>
+            </a>
         </div>
     </section>
 
@@ -761,25 +776,33 @@
         </div>
     </section>
 
-    <section class="section" id="blog">
-        <h2 class="section-title">Blog Yazıları</h2>
-        <div class="blog-list">
-            <a class="panel blog-card blog-feature" href="blog-virtual-threads.html">
-                <div>
-                    <div class="blog-title">Java Virtual Thread'ler: Java 21'den Java 24'e carrier thread meselesi</div>
-                    <div class="blog-meta">
-                        Sıfırdan anlatım: thread nedir, virtual thread neyi değiştirir, carrier thread neden bloklanır
-                        ve bu durum performansı nasıl etkiler?
-                    </div>
-                    <div class="blog-meta-row">
-                        <span class="tag primary">Java 21</span>
-                        <span class="tag">Java 24</span>
-                        <span class="tag">Virtual Threads</span>
-                        <span class="tag">Performance</span>
-                    </div>
-                </div>
-                <span class="url-label">Oku</span>
-            </a>
+    <section class="section" id="hakkimda">
+        <h2 class="section-title">Hakkımda</h2>
+        <div class="panel about">
+            <p>
+                Backend tarafında yalnızca endpoint yazmaya değil, sistemin üretimde nasıl davranacağına da odaklanıyorum.
+                Temiz kod, okunabilir mimari, DDD yaklaşımı, test edilebilir servisler ve gözlemlenebilirlik benim için
+                günlük geliştirme pratiğinin parçası. Spring Boot ve .NET Core ile çalışırken veritabanı tasarımından
+                CI/CD akışlarına kadar ürünün tamamını düşünen bir geliştirme tarzını seviyorum.
+            </p>
+        </div>
+    </section>
+
+    <section class="section" aria-label="Özet bilgiler">
+        <h2 class="section-title">Kısa Özet</h2>
+        <div class="stats">
+            <div class="panel stat">
+                <div class="stat-value">3+</div>
+                <div class="stat-label">Yıl deneyim</div>
+            </div>
+            <div class="panel stat">
+                <div class="stat-value">10+</div>
+                <div class="stat-label">Proje</div>
+            </div>
+            <div class="panel stat">
+                <div class="stat-value">2</div>
+                <div class="stat-label">Ana stack</div>
+            </div>
         </div>
     </section>
 

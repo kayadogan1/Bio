@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot 4 ile OpenTelemetry ve Grafana | Doğan Kaya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --page: #f6f8fb;
+            --paper: #ffffff;
+            --ink: #172033;
+            --muted: #5f6d7e;
+            --soft: #8794a5;
+            --line: #dce4ee;
+            --line-strong: #c3cedb;
+            --blue: #2563eb;
+            --blue-soft: #eaf1ff;
+            --green: #0f9f6e;
+            --green-soft: #e8f8f1;
+            --red: #d64545;
+            --red-soft: #fff0f0;
+            --yellow: #a86f00;
+            --yellow-soft: #fff7df;
+            --purple: #7c3aed;
+            --purple-soft: #f2edff;
+            --code: #101827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.13), transparent 34rem),
+                radial-gradient(circle at 95% 18%, rgba(15, 159, 110, 0.10), transparent 28rem),
+                linear-gradient(180deg, #fbfdff 0%, var(--page) 100%);
+            color: var(--ink);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            letter-spacing: 0;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page {
+            width: min(100%, 1080px);
+            margin: 0 auto;
+            padding: 28px 18px 70px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 9px 13px;
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.86rem;
+        }
+
+        .author {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.78rem;
+        }
+
+        .hero {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--paper);
+            box-shadow: 0 24px 70px rgba(23, 32, 51, 0.08);
+        }
+
+        .hero-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: 32px;
+            align-items: center;
+            padding: clamp(28px, 5vw, 54px);
+        }
+
+        .hero-inner > *,
+        .content > *,
+        .article,
+        .panel,
+        .code,
+        .metric-card,
+        .signal-card {
+            min-width: 0;
+        }
+
+        .kicker {
+            display: inline-flex;
+            width: fit-content;
+            border: 1px solid rgba(37, 99, 235, 0.24);
+            border-radius: 999px;
+            padding: 7px 11px;
+            color: var(--blue);
+            background: var(--blue-soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            max-width: 760px;
+            font-size: clamp(2rem, 6vw, 4.2rem);
+            line-height: 1.02;
+            letter-spacing: 0;
+            margin-bottom: 18px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.85;
+        }
+
+        .dashboard {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background:
+                linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(15, 159, 110, 0.08)),
+                #fbfdff;
+            padding: 18px;
+        }
+
+        .dash-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .metric-card {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #ffffff;
+            padding: 14px;
+        }
+
+        .metric-label {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            color: var(--ink);
+            font-size: 1.55rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .bars {
+            display: flex;
+            align-items: end;
+            gap: 5px;
+            height: 54px;
+        }
+
+        .bar {
+            flex: 1;
+            border-radius: 6px 6px 0 0;
+            background: var(--blue);
+            opacity: 0.78;
+        }
+
+        .bar.green {
+            background: var(--green);
+        }
+
+        .bar.red {
+            background: var(--red);
+        }
+
+        .trace-line {
+            display: grid;
+            gap: 7px;
+        }
+
+        .span {
+            height: 14px;
+            border-radius: 999px;
+            background: var(--blue-soft);
+            border: 1px solid rgba(37, 99, 235, 0.22);
+        }
+
+        .span.db {
+            width: 78%;
+            background: var(--yellow-soft);
+            border-color: rgba(168, 111, 0, 0.24);
+        }
+
+        .span.cache {
+            width: 34%;
+            background: var(--green-soft);
+            border-color: rgba(15, 159, 110, 0.22);
+        }
+
+        .span.http {
+            width: 92%;
+            background: var(--red-soft);
+            border-color: rgba(214, 69, 69, 0.22);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            gap: 26px;
+            align-items: start;
+            margin-top: 24px;
+        }
+
+        .toc {
+            position: sticky;
+            top: 18px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.82);
+            padding: 16px;
+        }
+
+        .toc h2 {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .toc a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 800;
+            line-height: 1.45;
+            padding: 8px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .article {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--paper);
+            padding: clamp(24px, 5vw, 52px);
+            box-shadow: 0 24px 70px rgba(23, 32, 51, 0.07);
+        }
+
+        .article section + section {
+            margin-top: 50px;
+        }
+
+        .article h2 {
+            font-size: clamp(1.55rem, 4vw, 2.25rem);
+            line-height: 1.18;
+            margin-bottom: 14px;
+        }
+
+        .article h3 {
+            font-size: 1.08rem;
+            line-height: 1.35;
+            margin: 22px 0 10px;
+        }
+
+        .article p,
+        .article li {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.9;
+        }
+
+        .article p + p {
+            margin-top: 12px;
+        }
+
+        .article strong {
+            color: var(--ink);
+            font-weight: 850;
+        }
+
+        .article ul {
+            display: grid;
+            gap: 9px;
+            margin: 14px 0 0 22px;
+        }
+
+        .signal-grid,
+        .two-col,
+        .three-col {
+            display: grid;
+            gap: 14px;
+            margin: 18px 0;
+        }
+
+        .signal-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .two-col {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .three-col {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .signal-card,
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fbfdff;
+            padding: 18px;
+        }
+
+        .signal-card h3,
+        .panel h3 {
+            margin-top: 0;
+        }
+
+        .callout {
+            border: 1px solid rgba(37, 99, 235, 0.22);
+            border-radius: 14px;
+            background: var(--blue-soft);
+            padding: 18px;
+            margin: 18px 0;
+        }
+
+        .callout.warning {
+            border-color: rgba(168, 111, 0, 0.24);
+            background: var(--yellow-soft);
+        }
+
+        .callout.danger {
+            border-color: rgba(214, 69, 69, 0.22);
+            background: var(--red-soft);
+        }
+
+        .callout-title {
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .code {
+            overflow: hidden;
+            border: 1px solid #223047;
+            border-radius: 14px;
+            background: var(--code);
+            margin: 18px 0;
+        }
+
+        .code-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 14px;
+            color: #a9b8ca;
+            border-bottom: 1px solid #223047;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.76rem;
+        }
+
+        pre {
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 18px;
+            color: #e7eefb;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .timeline-row {
+            display: grid;
+            grid-template-columns: 150px 1fr 70px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .timeline-label,
+        .timeline-ms {
+            color: var(--muted);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        .timeline-track {
+            height: 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: #eef3f8;
+            overflow: hidden;
+        }
+
+        .timeline-fill {
+            height: 100%;
+            border-radius: 999px;
+            background: var(--blue);
+        }
+
+        .timeline-fill.db {
+            background: var(--yellow);
+        }
+
+        .timeline-fill.red {
+            background: var(--red);
+        }
+
+        .checklist {
+            display: grid;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .check {
+            border-left: 4px solid var(--green);
+            border-radius: 10px;
+            background: #f8fffb;
+            padding: 13px 15px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .check strong {
+            display: block;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .sources {
+            margin-top: 42px;
+            border-top: 1px solid var(--line);
+            padding-top: 22px;
+        }
+
+        .sources a {
+            color: var(--blue);
+            font-weight: 800;
+        }
+
+        @media (max-width: 860px) {
+            .page {
+                padding: 18px 14px 48px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
+
+            .back-link {
+                padding: 8px 11px;
+                font-size: 0.8rem;
+            }
+
+            .author {
+                max-width: 140px;
+                text-align: right;
+                font-size: 0.7rem;
+            }
+
+            .hero-inner,
+            .content,
+            .signal-grid,
+            .two-col,
+            .three-col,
+            .dash-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-inner {
+                gap: 20px;
+                padding: 26px;
+            }
+
+            h1 {
+                font-size: clamp(1.9rem, 9vw, 2.7rem);
+                line-height: 1.08;
+                overflow-wrap: anywhere;
+            }
+
+            .hero p {
+                font-size: 0.98rem;
+                line-height: 1.75;
+            }
+
+            .toc {
+                position: static;
+                display: flex;
+                gap: 8px;
+                overflow-x: auto;
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            .toc h2 {
+                display: none;
+            }
+
+            .toc a {
+                flex: 0 0 auto;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                padding: 8px 10px;
+                background: #fff;
+                font-size: 0.78rem;
+                white-space: nowrap;
+            }
+
+            .article {
+                border-radius: 16px;
+                padding: 22px 18px;
+            }
+
+            .article h2 {
+                font-size: clamp(1.35rem, 7vw, 1.75rem);
+                overflow-wrap: anywhere;
+            }
+
+            .article p,
+            .article li {
+                font-size: 0.96rem;
+                line-height: 1.78;
+            }
+
+            .panel,
+            .signal-card,
+            .callout,
+            .dashboard,
+            .metric-card {
+                padding: 14px;
+                border-radius: 12px;
+            }
+
+            .code-title {
+                flex-direction: column;
+                gap: 4px;
+                padding: 10px 12px;
+                font-size: 0.7rem;
+            }
+
+            pre {
+                padding: 14px;
+                font-size: 0.72rem;
+                line-height: 1.55;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .timeline-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .page {
+                padding-inline: 10px;
+            }
+
+            .hero-inner {
+                padding: 22px 18px;
+            }
+
+            h1 {
+                font-size: 1.82rem;
+            }
+
+            .article {
+                padding: 20px 14px;
+            }
+
+            pre {
+                font-size: 0.68rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<main class="page">
+    <nav class="topbar">
+        <a class="back-link" href="deneme.html#blog">Portfolyoya dön</a>
+        <div class="author">Doğan Kaya / Observability Notes</div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="kicker">Spring Boot 4 Observability</div>
+                <h1>OpenTelemetry ve Grafana ile uygulama performansını okumak</h1>
+                <p>
+                    Bir Spring Boot 4 uygulamasında OpenTelemetry sinyallerini üretip Grafana üzerinde metrics, traces
+                    ve logs ile performans sorunlarını nasıl yorumlayacağını adım adım anlatan pratik rehber.
+                    Yazının teknik dayanakları ve resmi doküman bağlantıları en alttaki kaynakça bölümünde yer alıyor.
+                </p>
+            </div>
+            <div class="dashboard" aria-label="Grafana dashboard temsili">
+                <div class="dash-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">P95 LATENCY</div>
+                        <div class="metric-value">342 ms</div>
+                        <div class="bars">
+                            <span class="bar green" style="height: 34%"></span>
+                            <span class="bar green" style="height: 42%"></span>
+                            <span class="bar" style="height: 58%"></span>
+                            <span class="bar" style="height: 72%"></span>
+                            <span class="bar red" style="height: 92%"></span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">ERROR RATE</div>
+                        <div class="metric-value">1.8%</div>
+                        <div class="bars">
+                            <span class="bar green" style="height: 18%"></span>
+                            <span class="bar green" style="height: 20%"></span>
+                            <span class="bar" style="height: 28%"></span>
+                            <span class="bar red" style="height: 60%"></span>
+                            <span class="bar red" style="height: 42%"></span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">TRACE WATERFALL</div>
+                        <div class="trace-line">
+                            <span class="span"></span>
+                            <span class="span db"></span>
+                            <span class="span cache"></span>
+                            <span class="span http"></span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">LOG CORRELATION</div>
+                        <div class="metric-value">trace_id</div>
+                        <p style="color: var(--muted); line-height: 1.5; font-size: 0.82rem;">Aynı request'in log, span ve metric bağlantısı.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <aside class="toc">
+            <h2>Konu</h2>
+            <a href="#observability">Observability modeli</a>
+            <a href="#signals">Metrics, logs, traces</a>
+            <a href="#setup">Spring Boot 4 kurulumu</a>
+            <a href="#grafana">Grafana ile okuma</a>
+            <a href="#multithreading">Multithreading izleme</a>
+            <a href="#best-practices">Best practices</a>
+        </aside>
+
+        <article class="article">
+            <section id="observability">
+                <h2>1. Observability nedir ve monitoring'den farkı nedir?</h2>
+                <p>
+                    Monitoring genelde "sistem ayakta mı, CPU kaç, memory kaç, hata var mı?" sorularına cevap verir.
+                    <strong>Observability</strong> ise daha ileri gider: sistemin iç durumunu dışarıdan üretilen sinyallerle
+                    anlamaya çalışır. Yani sadece alarm görmek değil, alarmın nedenini bulmak için iz bırakmaktır.
+                </p>
+                <p>
+                    Spring Boot 4 tarafında bu yaklaşım Micrometer Observation, OpenTelemetry ve OTLP exporter akışıyla
+                    kurulabilir. Grafana tarafında ise bu sinyaller dashboard, trace waterfall, log araması ve alert
+                    panelleriyle okunur.
+                </p>
+
+                <div class="signal-grid">
+                    <div class="signal-card">
+                        <h3>Metrics</h3>
+                        <p>Sayısal ölçümlerdir. Request süresi, hata oranı, JVM memory, thread sayısı gibi değerleri zaman içinde gösterir.</p>
+                    </div>
+                    <div class="signal-card">
+                        <h3>Traces</h3>
+                        <p>Bir isteğin servisler ve katmanlar arasında hangi adımlardan geçtiğini, her adımın kaç ms sürdüğünü gösterir.</p>
+                    </div>
+                    <div class="signal-card">
+                        <h3>Logs</h3>
+                        <p>Uygulamanın olay günlüğüdür. Hata detayı, iş akışı, parametre ve karar noktaları için bağlam sağlar.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="signals">
+                <h2>2. Metrics, traces ve logs nasıl yorumlanır?</h2>
+                <p>
+                    İyi bir teşhis akışı genelde metrics ile başlar, traces ile daralır, logs ile kanıtlanır. Örneğin
+                    Grafana'da P95 latency 300 ms'den 900 ms'ye çıktıysa önce hangi endpoint'in yavaşladığını görürsün.
+                    Sonra trace waterfall'da yavaş span'i bulursun. En son aynı `trace_id` ile loglara gidip sebebi okursun.
+                </p>
+
+                <h3>Latency değerlerini okuma</h3>
+                <div class="timeline">
+                    <div class="timeline-row">
+                        <div class="timeline-label">HTTP Controller</div>
+                        <div class="timeline-track"><div class="timeline-fill" style="width: 22%"></div></div>
+                        <div class="timeline-ms">38 ms</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="timeline-label">Service Layer</div>
+                        <div class="timeline-track"><div class="timeline-fill" style="width: 34%"></div></div>
+                        <div class="timeline-ms">64 ms</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="timeline-label">PostgreSQL</div>
+                        <div class="timeline-track"><div class="timeline-fill db" style="width: 86%"></div></div>
+                        <div class="timeline-ms">420 ms</div>
+                    </div>
+                    <div class="timeline-row">
+                        <div class="timeline-label">External API</div>
+                        <div class="timeline-track"><div class="timeline-fill red" style="width: 96%"></div></div>
+                        <div class="timeline-ms">710 ms</div>
+                    </div>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Yorumlama mantığı</div>
+                    <p>
+                        Ortalama latency tek başına yeterli değildir. P50 normal kalırken P95/P99 yükseliyorsa kullanıcıların
+                        küçük ama önemli bir kısmı ciddi yavaşlık yaşıyor olabilir. Grafikte ani spike varsa deploy, cache
+                        miss, database lock, thread pool saturation veya external API gecikmesi düşünülmelidir.
+                    </p>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <h3>Metric okurken</h3>
+                        <ul>
+                            <li>P95/P99 latency trendine bak.</li>
+                            <li>Error rate ile latency aynı anda yükseliyor mu kontrol et.</li>
+                            <li>CPU düşük ama latency yüksekse I/O veya lock beklemesi olabilir.</li>
+                            <li>Thread sayısı ve queue depth artıyorsa concurrency baskısı vardır.</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Trace okurken</h3>
+                        <ul>
+                            <li>En uzun span'i bul.</li>
+                            <li>DB, cache, HTTP client span'lerini ayrı ayrı incele.</li>
+                            <li>Parent-child ilişkisini takip et.</li>
+                            <li>Aynı trace içindeki error tag ve log correlation alanlarına bak.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="setup">
+                <h2>3. Spring Boot 4 bazlı kurulum: dependency, OTLP endpoint ve Grafana stack</h2>
+                <p>
+                    Spring Boot 4 ile temel yaklaşım şudur: uygulama telemetry sinyallerini OTLP formatında dışarı verir,
+                    OpenTelemetry Collector bu sinyalleri alır, Grafana ekosistemi ise metrics, traces ve logs tarafını
+                    görselleştirir. Basit lokal kurulumda Grafana, Tempo ve Loki yeterlidir; production'da collector
+                    mutlaka araya konulmalıdır.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Maven dependency</span><span>Spring Boot 4.0.5</span></div>
+                    <pre><code>&lt;parent&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+    &lt;version&gt;4.0.5&lt;/version&gt;
+&lt;/parent&gt;
+
+&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-opentelemetry&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>application.yml</span><span>OTLP export</span></div>
+                    <pre><code>spring:
+  application:
+    name: finance-portal-api
+
+management:
+  opentelemetry:
+    resource-attributes:
+      service.name: finance-portal-api
+      service.namespace: portfolio
+      deployment.environment: local
+  otlp:
+    tracing:
+      endpoint: http://localhost:4318/v1/traces
+    metrics:
+      export:
+        url: http://localhost:4318/v1/metrics
+    logging:
+      endpoint: http://localhost:4318/v1/logs
+  observations:
+    key-values:
+      region: eu-central-1
+      stack: local</code></pre>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>OpenTelemetry Collector</span><span>otel-collector.yml</span></div>
+                    <pre><code>receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  batch:
+
+exporters:
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  loki:
+    endpoint: http://loki:3100/loki/api/v1/push
+  prometheus:
+    endpoint: 0.0.0.0:9464
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/tempo]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [loki]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]</code></pre>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Not</div>
+                    <p>
+                        Spring Boot dokümantasyonu OpenTelemetry için farklı yollar olduğunu söyler: Java agent,
+                        OpenTelemetry Spring Boot starter veya Spring'in Micrometer/OTLP yaklaşımı. Spring Boot 4
+                        örneğinde hedefimiz vendor-neutral telemetry üretmek ve Grafana tarafında yorumlamaktır.
+                    </p>
+                </div>
+            </section>
+
+            <section id="grafana">
+                <h2>4. Grafana'da süreç okuma: dashboard'dan trace'e, trace'den log'a</h2>
+                <p>
+                    Grafana'da iyi bir inceleme akışı panikten uzak olmalıdır. Önce büyük resmi görürsün: request rate,
+                    error rate, latency histogramları, JVM memory, GC pause, active threads. Sonra problemli endpoint veya
+                    servis seçilir. Ardından trace detayına gidilir ve log korelasyonu yapılır.
+                </p>
+
+                <div class="three-col">
+                    <div class="panel">
+                        <h3>1. Dashboard</h3>
+                        <p>Latency ve error rate spike'ını yakala. Hangi servis ve endpoint etkilenmiş bunu bul.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>2. Trace</h3>
+                        <p>Request içindeki en uzun span'i bul. DB mi, external API mi, lock beklemesi mi ayır.</p>
+                    </div>
+                    <div class="panel">
+                        <h3>3. Log</h3>
+                        <p>Aynı trace id ile loglara git. Exception, retry, timeout veya business rule kararını oku.</p>
+                    </div>
+                </div>
+
+                <h3>Örnek yorum</h3>
+                <p>
+                    Diyelim `/api/portfolio/summary` endpoint'i normalde P95 olarak 180 ms çalışıyor. Deploy sonrası P95
+                    740 ms oldu. Trace waterfall'da controller 20 ms, service 45 ms ama PostgreSQL span'i 620 ms görünüyor.
+                    Bu durumda controller koduna değil, query plan, index, lock, connection pool ve N+1 sorgu ihtimaline
+                    odaklanırsın.
+                </p>
+            </section>
+
+            <section id="multithreading">
+                <h2>5. Multithreading ortamda izleme: context propagation neden kritik?</h2>
+                <p>
+                    Observability verisi çoğu zaman `ThreadLocal` bağlamla taşınır: trace id, span id, baggage gibi bilgiler
+                    mevcut execution context içinde tutulur. Eğer iş başka thread'e atılırsa bu bağlam kaybolabilir. Sonuçta
+                    trace kopuk görünür, loglar trace id taşımayabilir ve Grafana'da request bütünlüğü bozulur.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Context propagation</span><span>Spring Boot 4</span></div>
+                    <pre><code>import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.support.ContextPropagatingTaskDecorator;
+
+@Configuration(proxyBeanMethods = false)
+class ObservabilityContextConfiguration {
+
+    @Bean
+    ContextPropagatingTaskDecorator contextPropagatingTaskDecorator() {
+        return new ContextPropagatingTaskDecorator();
+    }
+}</code></pre>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Neden önemli?</div>
+                    <p>
+                        `@Async`, `AsyncTaskExecutor`, custom executor, scheduler veya virtual thread executor kullanırken
+                        request context başka çalışma hattına geçer. Context propagation yoksa aynı request'in parçaları
+                        Grafana'da ayrı olaylarmış gibi görünür.
+                    </p>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <h3>İzlenecek metrikler</h3>
+                        <ul>
+                            <li>Active threads ve queued tasks</li>
+                            <li>Executor queue wait time</li>
+                            <li>Task duration histogram</li>
+                            <li>Rejected task count</li>
+                            <li>Lock wait veya DB connection wait</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Trace tarafında bakılacaklar</h3>
+                        <ul>
+                            <li>Async span parent-child ilişkisi korunmuş mu?</li>
+                            <li>Thread geçişinden sonra trace id aynı mı?</li>
+                            <li>Long-running task ayrı span olarak görünüyor mu?</li>
+                            <li>Timeout/retry span event olarak işlenmiş mi?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="best-practices">
+                <h2>6. Best practices: production'da okunabilir telemetry üretmek</h2>
+                <div class="checklist">
+                    <div class="check">
+                        <strong>Service name standardı koy</strong>
+                        `service.name`, `service.namespace`, `deployment.environment`, `region` gibi alanlar her serviste
+                        tutarlı olmalı. Yoksa dashboard filtreleri anlamsızlaşır.
+                    </div>
+                    <div class="check">
+                        <strong>High cardinality tag'leri metrics'e koyma</strong>
+                        `userId`, `orderId`, `traceId` gibi değerler metrics label olursa zaman serisi patlar. Bunları
+                        trace/log tarafında kullan.
+                    </div>
+                    <div class="check">
+                        <strong>Latency histogramlarını endpoint bazlı oku</strong>
+                        Sadece global latency bakma. `/login`, `/portfolio/summary`, `/orders` ayrı davranır.
+                    </div>
+                    <div class="check">
+                        <strong>Logs, traces ve metrics'i korele et</strong>
+                        Log formatında trace id ve span id varsa Grafana'da tek request'in tüm hikayesi okunur.
+                    </div>
+                    <div class="check">
+                        <strong>Alert'i semptoma, trace'i nedene bağla</strong>
+                        Alert "P95 800 ms oldu" der. Trace "PostgreSQL span'i 650 ms sürdü" diye nedeni daraltır.
+                    </div>
+                </div>
+
+                <div class="callout danger">
+                    <div class="callout-title">En yaygın hata</div>
+                    <p>
+                        Her şeyi loglamak observability değildir. Çok log üretmek maliyeti artırır ve problemi bulmayı
+                        zorlaştırır. İyi telemetry az ama anlamlı alanlarla, tutarlı isimlerle ve korelasyon id'leriyle
+                        üretilir.
+                    </p>
+                </div>
+            </section>
+
+            <section class="sources">
+                <h2>Kaynakça</h2>
+                <p>
+                    Bu yazıdaki Spring Boot 4 observability yaklaşımı, OpenTelemetry entegrasyon seçenekleri ve
+                    Grafana'da metrics/logs/traces yorumlama akışı aşağıdaki resmi dokümanlar temel alınarak hazırlandı.
+                </p>
+                <ul>
+                    <li><a href="https://docs.spring.io/spring-boot/4.0/reference/actuator/observability.html" target="_blank" rel="noopener">Spring Boot 4 Observability Documentation</a> — Micrometer Observation, OpenTelemetry support, OTLP export ve context propagation notları.</li>
+                    <li><a href="https://opentelemetry.io/docs/zero-code/java/spring-boot-starter/" target="_blank" rel="noopener">OpenTelemetry Spring Boot Starter Documentation</a> — Spring Boot uygulamalarında OTel starter ve Java agent seçenekleri.</li>
+                    <li><a href="https://grafana.com/docs/grafana/latest/visualizations/simplified-exploration/metrics/about-metrics/" target="_blank" rel="noopener">Grafana Metrics, Logs and Traces Overview</a> — metrics, logs, traces ve observability sinyallerinin Grafana tarafında yorumlanması.</li>
+                </ul>
+            </section>
+        </article>
+    </div>
+</main>
+</body>
+</html>
