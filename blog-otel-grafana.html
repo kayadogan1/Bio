@@ -613,7 +613,7 @@
 <body>
 <main class="page">
     <nav class="topbar">
-        <a class="back-link" href="deneme.html#blog">Portfolyoya dön</a>
+        <a class="back-link" href="index.html#blog">Portfolyoya dön</a>
         <div class="author">Doğan Kaya / Observability Notes</div>
     </nav>
 
@@ -918,6 +918,13 @@ service:
                     mevcut execution context içinde tutulur. Eğer iş başka thread'e atılırsa bu bağlam kaybolabilir. Sonuçta
                     trace kopuk görünür, loglar trace id taşımayabilir ve Grafana'da request bütünlüğü bozulur.
                 </p>
+                <p>
+                    Buradaki kritik ayrım şudur: <strong>aynı thread içinde devam eden iş</strong> ile
+                    <strong>yeni bir task olarak başka bir executor'a atılan iş</strong> aynı şey değildir.
+                    Eğer request tek bir virtual thread içinde başlıyor ve yine o virtual thread içinde bitiyorsa trace
+                    genelde korunur. Ama `@Async`, `CompletableFuture`, scheduler, custom executor veya fan-out yapan
+                    paralel task modeli devreye girdiğinde bağlamı açıkça taşımak gerekir.
+                </p>
 
                 <div class="code">
                     <div class="code-title"><span>Context propagation</span><span>Spring Boot 4</span></div>
@@ -944,6 +951,114 @@ class ObservabilityContextConfiguration {
                     </p>
                 </div>
 
+                <h3>ThreadLocal neden kaybolur?</h3>
+                <p>
+                    OpenTelemetry ve Micrometer tracing tarafında aktif observation/span bilgisi çoğu zaman `ThreadLocal`
+                    üzerinden tutulur. `ThreadLocal` adı üstünde thread'e özeldir. Sen parent request içinde bir trace
+                    başlatıp sonra işi başka bir thread'e verdiğinde, yeni thread eski thread'in `ThreadLocal` değerlerini
+                    kendiliğinden almaz. Bu yüzden child task içinde span açıldığında parent trace görünmeyebilir.
+                </p>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <h3>Trace'in korunduğu durum</h3>
+                        <ul>
+                            <li>Aynı request aynı execution hattında ilerliyorsa</li>
+                            <li>Spring managed executor üstünde task decorator varsa</li>
+                            <li>Reactor context propagation doğru ayarlanmışsa</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Trace'in koptuğu sınırlar</h3>
+                        <ul>
+                            <li>`@Async` method çağrısı</li>
+                            <li>`CompletableFuture.supplyAsync(...)`</li>
+                            <li>Elle açılmış executor veya scheduler</li>
+                            <li>Virtual thread içine ayrı child task submit edilmesi</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Virtual thread kullanınca ne değişir?</h3>
+                <p>
+                    Virtual thread daha hafif bir çalışma modeli sunar ama context propagation problemini sihirli şekilde
+                    çözmez. Trace context virtual thread üzerinde de yine execution context olarak taşınır. Yani sorun
+                    "platform thread mi, virtual thread mi" sorusundan çok, <strong>işi yeni bir boundary'den geçiriyor
+                    musun?</strong> sorusudur.
+                </p>
+                <p>
+                    Başka bir deyişle: tek request tek virtual thread üzerinde ilerliyorsa trace çoğu zaman kaybolmaz.
+                    Fakat o virtual thread içinde üç ayrı child task üretip bunları başka virtual thread'lere veya başka
+                    executor'a submit edersen, parent context'i çocuk işlere snapshot ile aktarman gerekir.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Virtual thread executor ile context taşıma</span><span>Micrometer Context Propagation</span></div>
+                    <pre><code>import io.micrometer.context.ContextSnapshotFactory;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class VirtualThreadTracingExample {
+
+    private final ContextSnapshotFactory contextSnapshotFactory =
+        ContextSnapshotFactory.builder().build();
+
+    void runTasks() {
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            Runnable task = contextSnapshotFactory.captureAll().wrap(() -> {
+                // Bu blokta parent trace / observation context yeniden kurulmuş olur.
+                callRemoteService();
+            });
+
+            executor.submit(task);
+        }
+    }
+}</code></pre>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Bu örnekte ne oluyor?</div>
+                    <p>
+                        `captureAll()` mevcut thread'deki context'i snapshot olarak alır. `wrap(...)` ise bu context'i
+                        child task çalışırken yeniden kurar. Böylece child task ister platform thread'de ister virtual
+                        thread'de koşsun, trace zinciri parent request ile bağlı kalır.
+                    </p>
+                </div>
+
+                <h3>Spring tarafında nasıl çözülür?</h3>
+                <p>
+                    Spring Boot 4 observability dokümanında önerilen yaklaşım, framework tarafından kullanılan async
+                    executor'larda `ContextPropagatingTaskDecorator` tanımlamaktır. Bu özellikle `@Async` ve
+                    `AsyncTaskExecutor` kullanan uygulamalarda en pratik çözümdür.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Virtual thread task executor bean</span><span>Spring Configuration</span></div>
+                    <pre><code>import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.support.ContextPropagatingTaskDecorator;
+import org.springframework.scheduling.concurrent.SimpleAsyncTaskExecutor;
+
+@Configuration(proxyBeanMethods = false)
+class AsyncExecutorConfiguration {
+
+    @Bean
+    AsyncTaskExecutor applicationTaskExecutor() {
+        SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("app-vt-");
+        executor.setVirtualThreads(true);
+        executor.setTaskDecorator(new ContextPropagatingTaskDecorator());
+        return executor;
+    }
+}</code></pre>
+                </div>
+
+                <p>
+                    Bu bean ile Spring'in async sınırından geçen işler virtual thread üzerinde çalışabilir ve aynı anda
+                    observation context de korunur. Böylece Grafana trace ekranında `@Async` ile ayrılmış child span'ler
+                    kopuk görünmez.
+                </p>
+
                 <div class="two-col">
                     <div class="panel">
                         <h3>İzlenecek metrikler</h3>
@@ -960,6 +1075,7 @@ class ObservabilityContextConfiguration {
                         <ul>
                             <li>Async span parent-child ilişkisi korunmuş mu?</li>
                             <li>Thread geçişinden sonra trace id aynı mı?</li>
+                            <li>Virtual thread fan-out sonrası child span'ler aynı trace altında mı?</li>
                             <li>Long-running task ayrı span olarak görünüyor mu?</li>
                             <li>Timeout/retry span event olarak işlenmiş mi?</li>
                         </ul>
