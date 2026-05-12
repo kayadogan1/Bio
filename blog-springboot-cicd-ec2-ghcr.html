@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Multi-Module CI/CD to EC2 | Doğan Kaya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --page: #f6f8fb;
+            --paper: #ffffff;
+            --ink: #172033;
+            --muted: #5f6d7e;
+            --soft: #8794a5;
+            --line: #dce4ee;
+            --line-strong: #c3cedb;
+            --blue: #2563eb;
+            --blue-soft: #eaf1ff;
+            --green: #0f9f6e;
+            --green-soft: #e8f8f1;
+            --red: #d64545;
+            --red-soft: #fff0f0;
+            --yellow: #a86f00;
+            --yellow-soft: #fff7df;
+            --code: #101827;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(37, 99, 235, 0.13), transparent 34rem),
+                radial-gradient(circle at 95% 18%, rgba(15, 159, 110, 0.09), transparent 28rem),
+                linear-gradient(180deg, #fbfdff 0%, var(--page) 100%);
+            color: var(--ink);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            letter-spacing: 0;
+        }
+
+        a { color: inherit; }
+
+        .page {
+            width: min(100%, 1080px);
+            margin: 0 auto;
+            padding: 28px 18px 70px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            padding: 9px 13px;
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 0.86rem;
+        }
+
+        .author {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.78rem;
+        }
+
+        .hero {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--paper);
+            box-shadow: 0 24px 70px rgba(23, 32, 51, 0.08);
+        }
+
+        .hero-inner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+            gap: 32px;
+            align-items: center;
+            padding: clamp(28px, 5vw, 54px);
+        }
+
+        .hero-inner > *,
+        .content > *,
+        .article,
+        .panel,
+        .code,
+        .service-card {
+            min-width: 0;
+        }
+
+        .kicker {
+            display: inline-flex;
+            width: fit-content;
+            border: 1px solid rgba(37, 99, 235, 0.24);
+            border-radius: 999px;
+            padding: 7px 11px;
+            color: var(--blue);
+            background: var(--blue-soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        h1 {
+            max-width: 760px;
+            font-size: clamp(2rem, 6vw, 4rem);
+            line-height: 1.02;
+            letter-spacing: 0;
+            margin-bottom: 18px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.85;
+        }
+
+        .architecture {
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background:
+                linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(15, 159, 110, 0.08)),
+                #fbfdff;
+            padding: 18px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .service-card {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #ffffff;
+            padding: 14px;
+        }
+
+        .service-label {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-size: 1rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .service-card p {
+            color: var(--muted);
+            line-height: 1.55;
+            font-size: 0.84rem;
+        }
+
+        .flow {
+            display: grid;
+            gap: 10px;
+        }
+
+        .flow-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .flow-label {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+
+        .flow-track {
+            min-height: 46px;
+            border: 1px dashed var(--line-strong);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.72);
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pill {
+            border-radius: 999px;
+            padding: 6px 9px;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.68rem;
+            font-weight: 800;
+            border: 1px solid rgba(37, 99, 235, 0.22);
+            background: var(--blue-soft);
+            color: var(--blue);
+        }
+
+        .pill.green {
+            border-color: rgba(15, 159, 110, 0.22);
+            background: var(--green-soft);
+            color: var(--green);
+        }
+
+        .pill.red {
+            border-color: rgba(214, 69, 69, 0.22);
+            background: var(--red-soft);
+            color: var(--red);
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 230px minmax(0, 1fr);
+            gap: 26px;
+            align-items: start;
+            margin-top: 24px;
+        }
+
+        .toc {
+            position: sticky;
+            top: 18px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.82);
+            padding: 16px;
+        }
+
+        .toc h2 {
+            color: var(--soft);
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .toc a {
+            display: block;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 800;
+            line-height: 1.45;
+            padding: 8px 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .article {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--paper);
+            padding: clamp(24px, 5vw, 52px);
+            box-shadow: 0 24px 70px rgba(23, 32, 51, 0.07);
+        }
+
+        .article section + section { margin-top: 50px; }
+
+        .article h2 {
+            font-size: clamp(1.55rem, 4vw, 2.25rem);
+            line-height: 1.18;
+            margin-bottom: 14px;
+        }
+
+        .article h3 {
+            font-size: 1.08rem;
+            line-height: 1.35;
+            margin: 22px 0 10px;
+        }
+
+        .article p,
+        .article li {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.9;
+        }
+
+        .article p + p { margin-top: 12px; }
+
+        .article strong {
+            color: var(--ink);
+            font-weight: 850;
+        }
+
+        .article ul {
+            display: grid;
+            gap: 9px;
+            margin: 14px 0 0 22px;
+        }
+
+        .two-col,
+        .three-col {
+            display: grid;
+            gap: 14px;
+            margin: 18px 0;
+        }
+
+        .two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .three-col { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+        .panel {
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: #fbfdff;
+            padding: 18px;
+        }
+
+        .panel h3 { margin-top: 0; }
+
+        .callout {
+            border: 1px solid rgba(37, 99, 235, 0.22);
+            border-radius: 14px;
+            background: var(--blue-soft);
+            padding: 18px;
+            margin: 18px 0;
+        }
+
+        .callout.warning {
+            border-color: rgba(168, 111, 0, 0.24);
+            background: var(--yellow-soft);
+        }
+
+        .callout.danger {
+            border-color: rgba(214, 69, 69, 0.22);
+            background: var(--red-soft);
+        }
+
+        .callout-title {
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .code {
+            overflow: hidden;
+            border: 1px solid #223047;
+            border-radius: 14px;
+            background: var(--code);
+            margin: 18px 0;
+        }
+
+        .code-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 11px 14px;
+            color: #a9b8ca;
+            border-bottom: 1px solid #223047;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.76rem;
+        }
+
+        pre {
+            max-width: 100%;
+            overflow-x: auto;
+            padding: 18px;
+            color: #e7eefb;
+            font-family: "JetBrains Mono", monospace;
+            font-size: 0.82rem;
+            line-height: 1.7;
+        }
+
+        .checklist {
+            display: grid;
+            gap: 10px;
+            margin: 18px 0;
+        }
+
+        .check {
+            border-left: 4px solid var(--green);
+            border-radius: 10px;
+            background: #f8fffb;
+            padding: 13px 15px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .check strong {
+            display: block;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+
+        .sources {
+            margin-top: 42px;
+            border-top: 1px solid var(--line);
+            padding-top: 22px;
+        }
+
+        .sources a {
+            color: var(--blue);
+            font-weight: 800;
+        }
+
+        @media (max-width: 860px) {
+            .page {
+                padding: 18px 14px 48px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                gap: 10px;
+                margin-bottom: 18px;
+            }
+
+            .back-link {
+                padding: 8px 11px;
+                font-size: 0.8rem;
+            }
+
+            .author {
+                max-width: 140px;
+                text-align: right;
+                font-size: 0.7rem;
+            }
+
+            .hero-inner,
+            .content,
+            .two-col,
+            .three-col,
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-inner {
+                gap: 20px;
+                padding: 26px;
+            }
+
+            h1 {
+                font-size: clamp(1.9rem, 9vw, 2.7rem);
+                line-height: 1.08;
+                overflow-wrap: anywhere;
+            }
+
+            .hero p {
+                font-size: 0.98rem;
+                line-height: 1.75;
+            }
+
+            .toc {
+                position: static;
+                display: flex;
+                gap: 8px;
+                overflow-x: auto;
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            .toc h2 { display: none; }
+
+            .toc a {
+                flex: 0 0 auto;
+                border: 1px solid var(--line);
+                border-radius: 999px;
+                padding: 8px 10px;
+                background: #fff;
+                font-size: 0.78rem;
+                white-space: nowrap;
+            }
+
+            .article {
+                border-radius: 16px;
+                padding: 22px 18px;
+            }
+
+            .article h2 {
+                font-size: clamp(1.35rem, 7vw, 1.75rem);
+                overflow-wrap: anywhere;
+            }
+
+            .article p,
+            .article li {
+                font-size: 0.96rem;
+                line-height: 1.78;
+            }
+
+            .panel,
+            .service-card,
+            .callout,
+            .architecture {
+                padding: 14px;
+                border-radius: 12px;
+            }
+
+            .code-title {
+                flex-direction: column;
+                gap: 4px;
+                padding: 10px 12px;
+                font-size: 0.7rem;
+            }
+
+            pre {
+                padding: 14px;
+                font-size: 0.72rem;
+                line-height: 1.55;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .flow-row {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+        }
+
+        @media (max-width: 390px) {
+            .page { padding-inline: 10px; }
+            .hero-inner { padding: 22px 18px; }
+            h1 { font-size: 1.82rem; }
+            .article { padding: 20px 14px; }
+            pre { font-size: 0.68rem; }
+        }
+    </style>
+</head>
+<body>
+<main class="page">
+    <nav class="topbar">
+        <a class="back-link" href="deneme.html#blog">Portfolyoya dön</a>
+        <div class="author">Doğan Kaya / CI-CD Notes</div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="kicker">Spring Boot Deployment</div>
+                <h1>Multi-module Spring Boot projesini Docker ve GHCR ile EC2'ye CI/CD kurmak</h1>
+                <p>
+                    Dört servisli bir yapıda gateway dahil tüm modülleri tek repoda tutup, Docker image üretip
+                    GitHub Container Registry'ye push eden ve AWS EC2 üzerinde güvenli şekilde ayağa kaldıran akışı
+                    sıfırdan anlatan pratik rehber.
+                </p>
+            </div>
+            <div class="architecture" aria-label="Mimari özet">
+                <div class="service-grid">
+                    <div class="service-card">
+                        <div class="service-label">EDGE</div>
+                        <div class="service-name">api-gateway</div>
+                        <p>Spring Cloud Gateway ile dış dünyadan gelen istekleri route eden giriş kapısı.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-label">CORE</div>
+                        <div class="service-name">user-service</div>
+                        <p>Kullanıcı, auth, profil ve temel account akışları.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-label">CORE</div>
+                        <div class="service-name">order-service</div>
+                        <p>Sipariş, iş kuralları ve transaction tarafı.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-label">CORE</div>
+                        <div class="service-name">catalog-service</div>
+                        <p>Ürün veya domain verisinin okunması ve sorgulanması.</p>
+                    </div>
+                </div>
+                <div class="flow">
+                    <div class="flow-row">
+                        <div class="flow-label">Repo</div>
+                        <div class="flow-track">
+                            <span class="pill">multi-module</span>
+                            <span class="pill">Dockerfile</span>
+                            <span class="pill">compose</span>
+                        </div>
+                    </div>
+                    <div class="flow-row">
+                        <div class="flow-label">CI</div>
+                        <div class="flow-track">
+                            <span class="pill green">build</span>
+                            <span class="pill green">test</span>
+                            <span class="pill green">push ghcr.io</span>
+                        </div>
+                    </div>
+                    <div class="flow-row">
+                        <div class="flow-label">CD</div>
+                        <div class="flow-track">
+                            <span class="pill red">ssh ec2</span>
+                            <span class="pill red">docker login</span>
+                            <span class="pill red">docker compose up</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <aside class="toc">
+            <h2>Konu</h2>
+            <a href="#architecture">Mimari tasarım</a>
+            <a href="#modules">Multi-module yapı</a>
+            <a href="#docker">Docker image yapısı</a>
+            <a href="#ghcr">GHCR kullanımı</a>
+            <a href="#ec2">EC2 hazırlığı</a>
+            <a href="#actions">GitHub Actions CI/CD</a>
+            <a href="#secrets">Secret güvenliği</a>
+        </aside>
+
+        <article class="article">
+            <section id="architecture">
+                <h2>1. Kurmak istediğimiz sistem: tek repo, dört servis, bir gateway, tek EC2 hedefi</h2>
+                <p>
+                    Bu senaryoda elimizde tek bir GitHub reposu var. Repo içinde dört servis tutuyoruz:
+                    `api-gateway`, `user-service`, `order-service`, `catalog-service`. İstekler dışarıdan önce
+                    gateway'e geliyor, oradan iç servislere yönleniyor.
+                </p>
+                <p>
+                    CI/CD hedefimiz şu: GitHub'a push yaptığımızda servisler build edilsin, image'lar `ghcr.io`
+                    altına gitsin, sonra EC2 makinesinde yeni image'lar çekilip Docker Compose ile servisler ayağa kalksın.
+                </p>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <h3>Neden tek repo?</h3>
+                        <ul>
+                            <li>Servisler arası ortak versiyon yönetimi kolaylaşır.</li>
+                            <li>Gateway ve backend modüllerini birlikte değiştirmek pratiktir.</li>
+                            <li>Ortak library, DTO ve build mantığı paylaşılabilir.</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>Neden EC2?</h3>
+                        <ul>
+                            <li>Basit ve doğrudan kontrol sağlar.</li>
+                            <li>Kubernetes kadar ağır değildir.</li>
+                            <li>Küçük ve orta ölçekli projede maliyet yönetimi nettir.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="modules">
+                <h2>2. Multi-module Spring Boot yapısı nasıl kurulur?</h2>
+                <p>
+                    Spring'in multi-module yaklaşımında kökte bir parent proje bulunur; servisler alt modül olarak
+                    tanımlanır. Ortak kod gerekiyorsa ayrıca `common` gibi bir modül açılır. Burada her servis ayrı
+                    çalıştırılabilir Spring Boot uygulamasıdır.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Örnek klasör yapısı</span><span>Maven</span></div>
+                    <pre><code>commerce-platform/
+├── pom.xml
+├── common/
+│   └── pom.xml
+├── api-gateway/
+│   └── pom.xml
+├── user-service/
+│   └── pom.xml
+├── order-service/
+│   └── pom.xml
+└── catalog-service/
+    └── pom.xml</code></pre>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>Root pom.xml</span><span>Aggregator</span></div>
+                    <pre><code>&lt;project&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;parent&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;
+        &lt;version&gt;4.0.5&lt;/version&gt;
+    &lt;/parent&gt;
+
+    &lt;groupId&gt;com.dogankaya&lt;/groupId&gt;
+    &lt;artifactId&gt;commerce-platform&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0&lt;/version&gt;
+    &lt;packaging&gt;pom&lt;/packaging&gt;
+
+    &lt;modules&gt;
+        &lt;module&gt;common&lt;/module&gt;
+        &lt;module&gt;api-gateway&lt;/module&gt;
+        &lt;module&gt;user-service&lt;/module&gt;
+        &lt;module&gt;order-service&lt;/module&gt;
+        &lt;module&gt;catalog-service&lt;/module&gt;
+    &lt;/modules&gt;
+&lt;/project&gt;</code></pre>
+                </div>
+
+                <div class="callout">
+                    <div class="callout-title">Önemli fikir</div>
+                    <p>
+                        Root `pom.xml` uygulama değil, yöneticidir. Asıl runnable Spring Boot uygulamaları alt modüllerdir.
+                        Her servis kendi `spring-boot-starter-web` veya gateway dependency setine sahip olur.
+                    </p>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>Gateway bağımlılığı</span><span>api-gateway/pom.xml</span></div>
+                    <pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-gateway-server-webflux&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+                </div>
+
+                <p>
+                    Spring Cloud Gateway, Spring Framework 7 ve Spring Boot 4 tabanlı route, security, monitoring ve
+                    resiliency katmanını gateway üzerinde toplamak için uygundur. Böylece iç servislerde her yerde aynı
+                    cross-cutting işi tekrar tekrar yazmazsın.
+                </p>
+            </section>
+
+            <section id="docker">
+                <h2>3. Docker tarafı: her servis için image üretmek ve Compose ile bir araya getirmek</h2>
+                <p>
+                    Her Spring Boot servisi için ayrı bir image üreteceğiz. En temiz yaklaşım her modülün kendi Dockerfile
+                    dosyasına sahip olmasıdır. Build sonrası çıkan jar dosyası image içine kopyalanır ve servis tek bir
+                    `ENTRYPOINT` ile ayağa kalkar.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>user-service/Dockerfile</span><span>Temel image</span></div>
+                    <pre><code>FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY target/user-service-1.0.0.jar app.jar
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]</code></pre>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>docker-compose.prod.yml</span><span>EC2 üzerinde çalışma</span></div>
+                    <pre><code>services:
+  api-gateway:
+    image: ghcr.io/kayadogan1/commerce-platform-api-gateway:latest
+    ports:
+      - "80:8080"
+    depends_on:
+      - user-service
+      - order-service
+      - catalog-service
+
+  user-service:
+    image: ghcr.io/kayadogan1/commerce-platform-user-service:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  order-service:
+    image: ghcr.io/kayadogan1/commerce-platform-order-service:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+
+  catalog-service:
+    image: ghcr.io/kayadogan1/commerce-platform-catalog-service:latest
+    environment:
+      SPRING_PROFILES_ACTIVE: prod</code></pre>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">Secret kuralı</div>
+                    <p>
+                        `application-prod.yml`, `.env` veya compose içinde asla gerçek AWS access key, database password
+                        veya GitHub token yazma. Bu yazıda da özellikle placeholder isimler kullanıyoruz:
+                        `AWS_ACCESS_KEY_ID`, `DB_PASSWORD`, `GHCR_PAT` gibi.
+                    </p>
+                </div>
+            </section>
+
+            <section id="ghcr">
+                <h2>4. GitHub Container Registry neden kullanılır ve nasıl etiketlenir?</h2>
+                <p>
+                    GitHub'ın eski Docker registry yapısı yerini `ghcr.io` tabanlı Container Registry'ye bıraktı.
+                    Burada her servis image'ını GitHub repo ile ilişkili şekilde saklayabilir, GitHub Actions içinden
+                    `GITHUB_TOKEN` ile publish edebilirsin.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Image isimlendirme örneği</span><span>GHCR</span></div>
+                    <pre><code>ghcr.io/kayadogan1/commerce-platform-api-gateway:latest
+ghcr.io/kayadogan1/commerce-platform-user-service:latest
+ghcr.io/kayadogan1/commerce-platform-order-service:latest
+ghcr.io/kayadogan1/commerce-platform-catalog-service:latest</code></pre>
+                </div>
+
+                <div class="checklist">
+                    <div class="check">
+                        <strong>Repo ile package ilişkisinin kurulması</strong>
+                        GitHub dokümanlarında önerildiği gibi image'ı repo ile bağlamak önemlidir; aksi halde workflow
+                        erişim izinleri karışabilir.
+                    </div>
+                    <div class="check">
+                        <strong>`GITHUB_TOKEN` tercih et</strong>
+                        Aynı repo içinden build/push yapıyorsan çoğu durumda personal token yerine workflow token kullanmak
+                        daha doğru ve daha güvenlidir.
+                    </div>
+                </div>
+            </section>
+
+            <section id="ec2">
+                <h2>5. AWS EC2 hazırlığı: Ubuntu, Docker kurulumu ve deploy kullanıcı düzeni</h2>
+                <p>
+                    EC2 üzerinde en pratik yaklaşım Ubuntu tabanlı bir instance açmak, Docker Engine kurmak ve uygulama
+                    klasörünü tek bir deploy kullanıcısı altında yönetmektir. Burada asıl önemli nokta şudur: server'a
+                    girebilmek için SSH key kullanırsın, ama workflow içine hiçbir zaman gerçek private key'i dosya olarak
+                    commit etmezsin.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>Docker kurulumu</span><span>Ubuntu EC2</span></div>
+                    <pre><code>sudo apt-get update
+sudo apt-get install ca-certificates curl
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release &amp;&amp; echo ${UBUNTU_CODENAME:-$VERSION_CODENAME}) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</code></pre>
+                </div>
+
+                <div class="code">
+                    <div class="code-title"><span>Sunucu klasör yapısı</span><span>/opt/apps</span></div>
+                    <pre><code>/opt/apps/commerce-platform/
+├── docker-compose.prod.yml
+├── .env
+└── deploy.sh</code></pre>
+                </div>
+
+                <div class="callout danger">
+                    <div class="callout-title">Burada özellikle yapmıyoruz</div>
+                    <p>
+                        AWS access key'i EC2 içine düz metin gömmüyoruz. EC2 zaten kendi rolüyle AWS servislerine erişecekse
+                        IAM role tercih edilir. GitHub Actions için de `EC2_HOST`, `EC2_USER`, `EC2_SSH_KEY` gibi secret
+                        alanları kullanılır; gerçek değer yazılmaz.
+                    </p>
+                </div>
+            </section>
+
+            <section id="actions">
+                <h2>6. GitHub Actions CI/CD akışı: build, test, image push ve EC2 deploy</h2>
+                <p>
+                    Pipeline iki mantık taşır. Birinci adım CI: Maven build ve test. İkinci adım CD: Docker image üret,
+                    GHCR'ye push et, sonra EC2'ye SSH ile bağlanıp yeni image'ları çek ve compose ile yeniden başlat.
+                </p>
+
+                <div class="code">
+                    <div class="code-title"><span>.github/workflows/deploy.yml</span><span>Örnek workflow</span></div>
+                    <pre><code>name: Build and Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build
+        run: mvn clean verify
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push gateway
+        uses: docker/build-push-action@v6
+        with:
+          context: ./api-gateway
+          push: true
+          tags: ghcr.io/kayadogan1/commerce-platform-api-gateway:latest
+
+      - name: Build and push user-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./user-service
+          push: true
+          tags: ghcr.io/kayadogan1/commerce-platform-user-service:latest
+
+      - name: Build and push order-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./order-service
+          push: true
+          tags: ghcr.io/kayadogan1/commerce-platform-order-service:latest
+
+      - name: Build and push catalog-service
+        uses: docker/build-push-action@v6
+        with:
+          context: ./catalog-service
+          push: true
+          tags: ghcr.io/kayadogan1/commerce-platform-catalog-service:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /opt/apps/commerce-platform
+            echo "${{ secrets.GHCR_PULL_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose -f docker-compose.prod.yml pull
+            docker compose -f docker-compose.prod.yml up -d
+            docker image prune -f</code></pre>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel">
+                        <h3>CI tarafında</h3>
+                        <ul>
+                            <li>`mvn clean verify` ile testler çalışır.</li>
+                            <li>Her servis için image build edilir.</li>
+                            <li>Image'lar GHCR'ye `latest` veya SHA tag ile pushlanır.</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <h3>CD tarafında</h3>
+                        <ul>
+                            <li>EC2'ye SSH ile bağlanılır.</li>
+                            <li>Yeni image'lar `docker compose pull` ile çekilir.</li>
+                            <li>Servisler `up -d` ile yeniden ayağa kaldırılır.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="secrets">
+                <h2>7. Secret ve güvenlik best practice'leri: key sızdırmadan deploy kurmak</h2>
+                <p>
+                    Bu tip yazılarda en büyük risk, eğitim amaçlı örnek verirken gerçek secret gösterilmesidir.
+                    Burada özellikle tüm alanları placeholder bıraktık. Gerçek hayatta GitHub Actions `Secrets and variables`
+                    ekranını kullanırsın ve değerleri oradan çekersin.
+                </p>
+
+                <div class="checklist">
+                    <div class="check">
+                        <strong>Gerçek AWS key yazma</strong>
+                        Mümkünse EC2 için IAM role kullan. Uygulama içinden S3, SES, SQS erişimi gerekiyorsa makinenin rolüyle çöz.
+                    </div>
+                    <div class="check">
+                        <strong>SSH private key'i repoya koyma</strong>
+                        `EC2_SSH_KEY` sadece GitHub Secret olarak dursun; repo içinde dosya olarak tutulmasın.
+                    </div>
+                    <div class="check">
+                        <strong>GHCR pull için minimum izin</strong>
+                        Pull yapan token sadece `read:packages` yetkisine sahip olmalı.
+                    </div>
+                    <div class="check">
+                        <strong>`latest` yanında immutable tag kullan</strong>
+                        Sadece `latest` ile gitme; commit SHA veya release tag ekle ki rollback mümkün olsun.
+                    </div>
+                </div>
+
+                <div class="callout warning">
+                    <div class="callout-title">En doğru sonraki adım</div>
+                    <p>
+                        Bu akış ilk aşama için yeterli. Bir sonraki olgunlaştırma adımı health check, reverse proxy,
+                        zero-downtime rollout, image digest pinning ve environment bazlı compose override dosyaları olur.
+                    </p>
+                </div>
+            </section>
+
+            <section class="sources">
+                <h2>Kaynakça</h2>
+                <p>
+                    Bu yazıdaki multi-module yapı, gateway tercihi, GHCR davranışı, Docker kurulumu ve GitHub Actions
+                    deployment akışı aşağıdaki resmi dokümanlar temel alınarak derlendi.
+                </p>
+                <ul>
+                    <li><a href="https://spring.io/guides/gs/multi-module/" target="_blank" rel="noopener">Spring Getting Started: Creating a Multi Module Project</a> — Spring Boot çok modüllü parent/module yapısının temel modeli.</li>
+                    <li><a href="https://docs.spring.io/spring-cloud-gateway/reference/index.html" target="_blank" rel="noopener">Spring Cloud Gateway Reference</a> — Gateway'in Spring Boot 4 ve Spring Framework 7 tabanlı kullanım çerçevesi.</li>
+                    <li><a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry" target="_blank" rel="noopener">GitHub Docs: Working with the Container registry</a> — GHCR authentication, push/pull ve `GITHUB_TOKEN` kullanımı.</li>
+                    <li><a href="https://docs.github.com/en/actions/how-tos/deploy" target="_blank" rel="noopener">GitHub Docs: Deploying with GitHub Actions</a> — deployment workflow mantığı ve GitHub Actions deploy rehberi.</li>
+                    <li><a href="https://docs.docker.com/installation/ubuntulinux/" target="_blank" rel="noopener">Docker Docs: Install Docker Engine on Ubuntu</a> — EC2 Ubuntu makinede resmi Docker Engine kurulumu.</li>
+                </ul>
+            </section>
+        </article>
+    </div>
+</main>
+</body>
+</html>
