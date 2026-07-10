@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doğan Kaya | Backend Developer</title>
-    <meta name="description" content="Doğan Kaya — Java ve .NET ekosistemlerinde backend geliştiren yazılım mühendisi. Projeler, blog yazıları ve iletişim.">
+    <meta name="description"
+        content="Doğan Kaya — Java ve .NET ekosistemlerinde backend geliştiren yazılım mühendisi. Projeler, blog yazıları ve iletişim.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
     <style>
         /* ── Reset ── */
-        *, *::before, *::after {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -429,207 +435,213 @@
         }
     </style>
 </head>
+
 <body>
-<div class="wrapper">
-    <nav>
-        <div class="nav-logo">DK</div>
-        <div class="nav-links">
-            <a href="#blog">Yazılar</a>
-            <a href="#projeler">Projeler</a>
-            <a href="mailto:dogann2536@gmail.com">İletişim</a>
-        </div>
-    </nav>
+    <div class="wrapper">
+        <nav>
+            <div class="nav-logo">DK</div>
+            <div class="nav-links">
+                <a href="#blog">Yazılar</a>
+                <a href="#projeler">Projeler</a>
+                <a href="mailto:dogann2536@gmail.com">İletişim</a>
+            </div>
+        </nav>
 
-    <header class="hero">
-        <h1>Doğan Kaya</h1>
-        <p class="hero-subtitle">
-            Türkiye'den bir <strong>Backend Developer</strong>.<br>
-            Java ve .NET ekosistemlerinde güvenilir, ölçeklenebilir backend sistemleri tasarlıyor ve geliştiriyorum.
-        </p>
-
-        <div class="social-icons">
-            <!-- GitHub -->
-            <a href="https://github.com/kayadogan1" target="_blank" rel="noopener" aria-label="GitHub">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-            </a>
-            <!-- LinkedIn -->
-            <a href="https://www.linkedin.com/in/dogann-kaya" target="_blank" rel="noopener" aria-label="LinkedIn">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                </svg>
-            </a>
-            <!-- Email -->
-            <a href="mailto:dogann2536@gmail.com" aria-label="E-posta">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2"/>
-                    <polyline points="22,4 12,13 2,4"/>
-                </svg>
-            </a>
-        </div>
-    </header>
-
-    <!-- Hakkımda -->
-    <section class="section" id="hakkimda">
-        <div class="section-header">
-            <h2>Hakkımda</h2>
-            <div class="line"></div>
-        </div>
-        <div class="about">
-            <p>
-                Backend tarafında yalnızca endpoint yazmaya değil, sistemin üretimde nasıl davranacağına da odaklanıyorum.
-                <strong>Spring Boot</strong> ve <strong>.NET Core</strong> ile çalışırken veritabanı tasarımından CI/CD
-                akışlarına kadar ürünün tamamını düşünen bir geliştirme tarzını benimsiyorum.
+        <header class="hero">
+            <h1>Doğan Kaya</h1>
+            <p class="hero-subtitle">
+                <strong>Backend Developer</strong>.<br>
+                Java ve .NET ekosistemlerinde güvenilir, ölçeklenebilir backend sistemleri tasarlıyor ve geliştiriyorum.
             </p>
-            <p>
-                Dağıtık sistemler, soyutlamalar, ödünleşimler ve mimari kararlar üzerine düşünmekten
-                keyif alıyorum. Mühendislik, sistemler ve teknoloji üzerine yazıyorum.
-            </p>
-        </div>
-    </section>
 
-    <!-- Odaklandıklarım -->
-    <section class="section">
-        <div class="section-header">
-            <h2>Odaklandıklarım</h2>
-            <div class="line"></div>
-        </div>
-        <div class="focus-grid">
-            <div class="focus-item">
-                <div class="focus-label">Backend Geliştirme</div>
-                Java ve .NET ekosistemlerinde servis tasarımı
+            <div class="social-icons">
+                <!-- GitHub -->
+                <a href="https://github.com/kayadogan1" target="_blank" rel="noopener" aria-label="GitHub">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </a>
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/dogann-kaya" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                </a>
+                <!-- Email -->
+                <a href="mailto:dogann2536@gmail.com" aria-label="E-posta">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2" />
+                        <polyline points="22,4 12,13 2,4" />
+                    </svg>
+                </a>
             </div>
-            <div class="focus-item">
-                <div class="focus-label">Mimari</div>
-                Mikroservisler, API tasarımı ve DDD yaklaşımı
-            </div>
-            <div class="focus-item">
-                <div class="focus-label">Finansal Sistemler</div>
-                Gerçek zamanlı veri akışları ve portföy yönetimi
-            </div>
-            <div class="focus-item">
-                <div class="focus-label">Altyapı</div>
-                Docker, AWS, CI/CD ve Observability
-            </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- Blog Yazıları -->
-    <section class="section" id="blog">
-        <div class="section-header">
-            <h2>Yazılar</h2>
-            <div class="line"></div>
-        </div>
-        <div class="blog-list">
-            <a class="blog-item" href="blog-virtual-threads.html">
-                <div class="blog-item-left">
-                    <div class="blog-item-title">Java Virtual Thread'ler: Java 21'den Java 24'e Carrier Thread Meselesi</div>
-                    <div class="blog-item-desc">
-                        Thread modeli, Virtual Thread API'leri, carrier pinning, semaphore ve performans davranışını
-                        sıfırdan anlatan detaylı concurrency yazısı.
+        <!-- Hakkımda -->
+        <section class="section" id="hakkimda">
+            <div class="section-header">
+                <h2>Hakkımda</h2>
+                <div class="line"></div>
+            </div>
+            <div class="about">
+                <p>
+                    <strong>Java</strong> ve <strong>.NET</strong> tarafında backend geliştiriyorum.
+                    Dağıtık sistemler, <strong>Kubernetes</strong>, CI/CD süreçleri ve
+                    Observability gibi konulara ilgim var, projelerimde uygulamaya çalışıyorum.
+                </p>
+                <p>
+                    Öğrendiklerimi ve deneyimlerimi blog yazıları aracılığıyla paylaşıyorum.
+                </p>
+            </div>
+        </section>
+
+        <!-- Odaklandıklarım -->
+        <section class="section">
+            <div class="section-header">
+                <h2>Odaklandıklarım</h2>
+                <div class="line"></div>
+            </div>
+            <div class="focus-grid">
+                <div class="focus-item">
+                    <div class="focus-label">Backend Geliştirme</div>
+                    Java ve .NET ekosistemlerinde servis tasarımı
+                </div>
+                <div class="focus-item">
+                    <div class="focus-label">Mimari</div>
+                    Mikroservisler, API tasarımı ve DDD yaklaşımı
+                </div>
+                <div class="focus-item">
+                    <div class="focus-label">Finansal Sistemler</div>
+                    Gerçek zamanlı veri akışları ve portföy yönetimi
+                </div>
+                <div class="focus-item">
+                    <div class="focus-label">Altyapı</div>
+                    Docker, AWS, CI/CD ve Observability
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Yazıları -->
+        <section class="section" id="blog">
+            <div class="section-header">
+                <h2>Yazılar</h2>
+                <div class="line"></div>
+            </div>
+            <div class="blog-list">
+                <a class="blog-item" href="blog-virtual-threads.html">
+                    <div class="blog-item-left">
+                        <div class="blog-item-title">Java Virtual Thread'ler: Java 21'den Java 24'e Carrier Thread
+                            Meselesi</div>
+                        <div class="blog-item-desc">
+                            Thread modeli, Virtual Thread API'leri, carrier pinning, semaphore ve performans davranışını
+                            sıfırdan anlatan detaylı concurrency yazısı.
+                        </div>
+                        <div class="blog-item-tags">
+                            <span class="mini-tag">Java 21</span>
+                            <span class="mini-tag">Java 24</span>
+                            <span class="mini-tag">Virtual Threads</span>
+                        </div>
                     </div>
-                    <div class="blog-item-tags">
-                        <span class="mini-tag">Java 21</span>
-                        <span class="mini-tag">Java 24</span>
-                        <span class="mini-tag">Virtual Threads</span>
-                    </div>
-                </div>
-                <span class="blog-arrow">→</span>
-            </a>
+                    <span class="blog-arrow">→</span>
+                </a>
 
-            <a class="blog-item" href="blog-springboot-cicd-ec2-ghcr.html">
-                <div class="blog-item-left">
-                    <div class="blog-item-title">Spring Boot Multi-Module Projeyi Docker ve GHCR ile EC2'ye CI/CD Kurmak</div>
-                    <div class="blog-item-desc">
-                        Dört servisli yapı, gateway, GHCR image push, EC2 deploy, Docker Compose ve
-                        GitHub Actions akışını sıfırdan anlatan deployment rehberi.
+                <a class="blog-item" href="blog-springboot-cicd-ec2-ghcr.html">
+                    <div class="blog-item-left">
+                        <div class="blog-item-title">Spring Boot Multi-Module Projeyi Docker ve GHCR ile EC2'ye CI/CD
+                            Kurmak</div>
+                        <div class="blog-item-desc">
+                            Dört servisli yapı, gateway, GHCR image push, EC2 deploy, Docker Compose ve
+                            GitHub Actions akışını sıfırdan anlatan deployment rehberi.
+                        </div>
+                        <div class="blog-item-tags">
+                            <span class="mini-tag">Spring Boot</span>
+                            <span class="mini-tag">Docker</span>
+                            <span class="mini-tag">GHCR</span>
+                            <span class="mini-tag">AWS EC2</span>
+                        </div>
                     </div>
-                    <div class="blog-item-tags">
-                        <span class="mini-tag">Spring Boot</span>
-                        <span class="mini-tag">Docker</span>
-                        <span class="mini-tag">GHCR</span>
-                        <span class="mini-tag">AWS EC2</span>
-                    </div>
-                </div>
-                <span class="blog-arrow">→</span>
-            </a>
+                    <span class="blog-arrow">→</span>
+                </a>
 
-            <a class="blog-item" href="blog-otel-grafana.html">
-                <div class="blog-item-left">
-                    <div class="blog-item-title">Spring Boot 4 ile OpenTelemetry ve Grafana Observability</div>
-                    <div class="blog-item-desc">
-                        Metrics, traces ve logs sinyallerini okuyarak uygulama performansını ölçme,
-                        yorumlama ve multithreaded ortamlarda context kaybını önleme rehberi.
+                <a class="blog-item" href="blog-otel-grafana.html">
+                    <div class="blog-item-left">
+                        <div class="blog-item-title">Spring Boot 4 ile OpenTelemetry ve Grafana Observability</div>
+                        <div class="blog-item-desc">
+                            Metrics, traces ve logs sinyallerini okuyarak uygulama performansını ölçme,
+                            yorumlama ve multithreaded ortamlarda context kaybını önleme rehberi.
+                        </div>
+                        <div class="blog-item-tags">
+                            <span class="mini-tag">OpenTelemetry</span>
+                            <span class="mini-tag">Grafana</span>
+                            <span class="mini-tag">Tracing</span>
+                        </div>
                     </div>
-                    <div class="blog-item-tags">
-                        <span class="mini-tag">OpenTelemetry</span>
-                        <span class="mini-tag">Grafana</span>
-                        <span class="mini-tag">Tracing</span>
-                    </div>
-                </div>
-                <span class="blog-arrow">→</span>
-            </a>
-        </div>
-    </section>
+                    <span class="blog-arrow">→</span>
+                </a>
+            </div>
+        </section>
 
-    <!-- Projeler -->
-    <section class="section" id="projeler">
-        <div class="section-header">
-            <h2>Projeler</h2>
-            <div class="line"></div>
-        </div>
-        <div class="project-list">
-            <div class="project-card">
-                <div class="project-card-top">
-                    <span class="project-name">Finance Portal</span>
-                    <span class="project-tech">Java · Spring Boot · PostgreSQL · Redis · Kafka</span>
+        <!-- Projeler -->
+        <section class="section" id="projeler">
+            <div class="section-header">
+                <h2>Projeler</h2>
+                <div class="line"></div>
+            </div>
+            <div class="project-list">
+                <div class="project-card">
+                    <div class="project-card-top">
+                        <span class="project-name">Finance Portal</span>
+                        <span class="project-tech">Java · Spring Boot · PostgreSQL · Redis · Kafka</span>
+                    </div>
+                    <div class="project-desc">
+                        Hisse, kripto ve tahvil gibi varlıkları tek panelde takip eden, portföy hesaplama,
+                        canlı fiyat güncelleme ve raporlama akışlarını içeren backend odaklı finans platformu.
+                    </div>
                 </div>
-                <div class="project-desc">
-                    Hisse, kripto ve tahvil gibi varlıkları tek panelde takip eden, portföy hesaplama,
-                    canlı fiyat güncelleme ve raporlama akışlarını içeren backend odaklı finans platformu.
+
+                <div class="project-card">
+                    <div class="project-card-top">
+                        <span class="project-name">Finstant</span>
+                        <span class="project-tech">Java · Kafka · PostgreSQL · OpenSearch</span>
+                    </div>
+                    <div class="project-desc">
+                        REST ve telnet tabanlı veri girişlerini işleyen, finansal verileri domain katmanında
+                        ayrıştıran ve Kafka üzerinden tüketici servislerine aktaran backend projesi.
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-card-top">
+                        <span class="project-name">Fitness App</span>
+                        <span class="project-tech">.NET Core · C# · ASP.NET · Docker</span>
+                    </div>
+                    <div class="project-desc">
+                        Üye, randevu ve yönetim paneli bileşenlerini ayrı katmanlarda ele alan
+                        modüler spor salonu yönetim sistemi.
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-card-top">
+                        <span class="project-name">Mobilya E-Commerce</span>
+                        <span class="project-tech">React · TypeScript · Express · Prisma</span>
+                    </div>
+                    <div class="project-desc">
+                        Ürün listeleme, kategori yönetimi ve admin paneli ile uçtan uca çalışan
+                        full-stack e-ticaret uygulaması.
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="project-card">
-                <div class="project-card-top">
-                    <span class="project-name">Finstant</span>
-                    <span class="project-tech">Java · Kafka · PostgreSQL · OpenSearch</span>
-                </div>
-                <div class="project-desc">
-                    REST ve telnet tabanlı veri girişlerini işleyen, finansal verileri domain katmanında
-                    ayrıştıran ve Kafka üzerinden tüketici servislerine aktaran backend projesi.
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="project-card-top">
-                    <span class="project-name">Fitness App</span>
-                    <span class="project-tech">.NET Core · C# · ASP.NET · Docker</span>
-                </div>
-                <div class="project-desc">
-                    Üye, randevu ve yönetim paneli bileşenlerini ayrı katmanlarda ele alan
-                    modüler spor salonu yönetim sistemi.
-                </div>
-            </div>
-
-            <div class="project-card">
-                <div class="project-card-top">
-                    <span class="project-name">Mobilya E-Commerce</span>
-                    <span class="project-tech">React · TypeScript · Express · Prisma</span>
-                </div>
-                <div class="project-desc">
-                    Ürün listeleme, kategori yönetimi ve admin paneli ile uçtan uca çalışan
-                    full-stack e-ticaret uygulaması.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <span>Doğan Kaya © 2025</span>
-        <a href="mailto:dogann2536@gmail.com">dogann2536@gmail.com</a>
-    </footer>
-</div>
+        <footer>
+            <span>Doğan Kaya © 2025</span>
+            <a href="mailto:dogann2536@gmail.com">dogann2536@gmail.com</a>
+        </footer>
+    </div>
 </body>
+
 </html>
