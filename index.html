@@ -4,25 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doğan Kaya | Backend Developer</title>
+    <meta name="description" content="Doğan Kaya — Java ve .NET ekosistemlerinde backend geliştiren yazılım mühendisi. Projeler, blog yazıları ve iletişim.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #f4f7fb;
-            --surface: #ffffff;
-            --surface-soft: #f8fbff;
-            --line: #dce4ee;
-            --line-strong: #bdc9d8;
-            --text: #152033;
-            --muted: #5b6878;
-            --soft: #8290a1;
-            --accent: #2563eb;
-            --accent-soft: rgba(37, 99, 235, 0.10);
-            --success: #0f9f6e;
-            --success-soft: rgba(15, 159, 110, 0.10);
-        }
-
-        * {
+        /* ── Reset ── */
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -34,983 +22,614 @@
 
         body {
             min-height: 100vh;
-            background:
-                radial-gradient(circle at 8% 0%, rgba(37, 99, 235, 0.13), transparent 34rem),
-                radial-gradient(circle at 96% 10%, rgba(15, 159, 110, 0.09), transparent 28rem),
-                linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
-            color: var(--text);
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            letter-spacing: 0;
+            background: #0c0c0c;
+            color: #c8c8c8;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-weight: 400;
+            font-size: 15px;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         a {
             color: inherit;
+            text-decoration: none;
         }
 
+        ::selection {
+            background: rgba(99, 162, 255, 0.25);
+            color: #fff;
+        }
+
+        /* ── Layout ── */
         .wrapper {
-            width: min(100%, 980px);
+            width: min(100%, 720px);
             margin: 0 auto;
-            padding: 56px 20px 72px;
+            padding: 0 28px;
         }
 
-        .hero {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 22px;
-            align-items: center;
-            margin-bottom: 38px;
-        }
-
-        .avatar {
-            width: 96px;
-            height: 96px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #ffffff;
-            box-shadow: 0 16px 40px rgba(21, 32, 51, 0.14);
-            background: var(--surface);
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            width: fit-content;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid rgba(90, 193, 123, 0.28);
-            border-radius: 999px;
-            padding: 5px 11px;
-            color: var(--success);
-            background: var(--success-soft);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.72rem;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-
-        .eyebrow::before {
-            content: "";
-            width: 7px;
-            height: 7px;
-            border-radius: 999px;
-            background: var(--success);
-        }
-
-        h1 {
-            font-size: clamp(2rem, 6vw, 3.4rem);
-            line-height: 1;
-            letter-spacing: 0;
-            margin-bottom: 12px;
-        }
-
-        .lead {
-            max-width: 670px;
-            color: var(--muted);
-            font-size: 1rem;
-            line-height: 1.75;
-        }
-
-        .lead strong {
-            color: var(--accent);
-            font-weight: 650;
-        }
-
-        .quick-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .quick-links a {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 9px 12px;
-            color: var(--text);
-            background: rgba(255, 255, 255, 0.78);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-        }
-
-        .quick-links a:hover {
-            border-color: var(--accent);
-            background: var(--accent-soft);
-            transform: translateY(-1px);
-        }
-
-        .section {
-            margin-top: 34px;
-        }
-
-        .section-title {
+        /* ── Navigation ── */
+        nav {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
-            color: #526176;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.74rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            justify-content: space-between;
+            padding: 32px 0;
+            margin-bottom: 56px;
         }
 
-        .section-title::after {
+        .nav-logo {
+            font-weight: 600;
+            font-size: 15px;
+            color: #f0f0f0;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            color: #606060;
+            font-size: 14px;
+            font-weight: 400;
+            transition: color 0.25s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
             content: "";
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
             height: 1px;
-            flex: 1;
-            background: var(--line);
+            background: #f0f0f0;
+            transition: width 0.25s ease;
         }
 
-        .panel {
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.92);
-            box-shadow: 0 18px 50px rgba(21, 32, 51, 0.07);
+        .nav-links a:hover {
+            color: #f0f0f0;
         }
 
-        .about {
-            padding: 22px;
-            color: var(--muted);
-            line-height: 1.85;
-            font-size: 0.96rem;
+        .nav-links a:hover::after {
+            width: 100%;
         }
 
-        .about strong {
-            color: var(--text);
-            font-weight: 650;
+        /* ── Hero ── */
+        .hero {
+            margin-bottom: 72px;
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .stat {
-            padding: 17px 16px;
-        }
-
-        .stat-value {
-            color: var(--accent);
-            font-size: 1.5rem;
-            font-weight: 800;
-            line-height: 1;
-            margin-bottom: 7px;
-        }
-
-        .stat-label {
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        .stack {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            padding: 16px;
-            border-color: rgba(37, 99, 235, 0.22);
-            box-shadow: 0 24px 70px rgba(37, 99, 235, 0.10);
-        }
-
-        .stack-group {
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            background: var(--surface-soft);
-            padding: 16px;
-        }
-
-        .stack-group h3 {
-            color: var(--text);
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-        }
-
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .tag {
-            border: 1px solid var(--line-strong);
-            border-radius: 6px;
-            padding: 6px 9px;
-            color: var(--muted);
-            background: #ffffff;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.72rem;
-            line-height: 1.2;
-        }
-
-        .tag.primary {
-            color: var(--accent);
-            border-color: rgba(106, 166, 255, 0.36);
-            background: var(--accent-soft);
-        }
-
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 14px;
-        }
-
-        .project {
-            padding: 20px;
-            transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
-        }
-
-        .project:hover {
-            border-color: var(--line-strong);
-            background: var(--surface-soft);
-            transform: translateY(-2px);
-        }
-
-        .project.featured {
-            grid-column: 1 / -1;
-        }
-
-        .project-kicker {
-            color: var(--accent);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.72rem;
-            font-weight: 600;
-            margin-bottom: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-        }
-
-        .project h3 {
-            font-size: 1.05rem;
-            margin-bottom: 9px;
-        }
-
-        .project p {
-            color: var(--muted);
-            font-size: 0.9rem;
-            line-height: 1.7;
-        }
-
-        .project-points {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin: 16px 0 2px;
-        }
-
-        .project-point {
-            border-left: 2px solid var(--line-strong);
-            padding-left: 10px;
-            color: var(--muted);
-            font-size: 0.82rem;
-            line-height: 1.55;
-        }
-
-        .project-point strong {
-            display: block;
-            color: var(--text);
-            font-size: 0.78rem;
-            margin-bottom: 2px;
-        }
-
-        .project .tags {
-            margin-top: 14px;
-        }
-
-        .blog-list,
-        .links-list {
-            display: grid;
-            gap: 10px;
-        }
-
-        .blog-list {
-            gap: 14px;
-        }
-
-        .blog-feature {
-            padding: 22px;
-            border-color: rgba(37, 99, 235, 0.28);
-            background:
-                linear-gradient(135deg, rgba(37, 99, 235, 0.12), rgba(255, 255, 255, 0.96) 42%),
-                #ffffff;
-            box-shadow: 0 22px 60px rgba(37, 99, 235, 0.12);
-        }
-
-        .blog-feature h3 {
-            font-size: clamp(1.35rem, 4vw, 2rem);
-            line-height: 1.2;
-            margin-bottom: 10px;
-        }
-
-        .blog-feature p {
-            color: var(--muted);
-            line-height: 1.75;
-            max-width: 760px;
-        }
-
-        .blog-meta-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .blog-card,
-        .link-card {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 16px;
-            align-items: center;
-            padding: 16px 18px;
-            text-decoration: none;
-            transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-        }
-
-        .blog-card:hover,
-        .link-card:hover {
-            border-color: var(--accent);
-            background: var(--accent-soft);
-            transform: translateY(-1px);
-        }
-
-        .blog-card[aria-disabled="true"] {
-            cursor: default;
-            pointer-events: none;
-        }
-
-        .blog-card[aria-disabled="true"]:hover {
-            border-color: var(--line);
-            background: rgba(255, 255, 255, 0.92);
-            transform: none;
-        }
-
-        .blog-title,
-        .link-title {
+        .hero h1 {
+            font-size: clamp(2.2rem, 5.5vw, 3.2rem);
             font-weight: 700;
-            font-size: 0.94rem;
-            margin-bottom: 4px;
+            color: #f5f5f5;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 20px;
         }
 
-        .blog-meta,
-        .link-meta {
-            color: var(--muted);
-            font-size: 0.8rem;
-            line-height: 1.5;
+        .hero-subtitle {
+            color: #707070;
+            font-size: 16px;
+            line-height: 1.75;
+            max-width: 520px;
         }
 
-        .url-label {
-            color: var(--soft);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.72rem;
+        .hero-subtitle strong {
+            color: #a0a0a0;
+            font-weight: 500;
+        }
+
+        /* ── Social Icons ── */
+        .social-icons {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 32px;
+        }
+
+        .social-icons a {
+            color: #484848;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #1c1c1c;
+            transition: all 0.25s ease;
+        }
+
+        .social-icons a:hover {
+            color: #f0f0f0;
+            border-color: #333;
+            background: #161616;
+        }
+
+        .social-icons svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        /* ── Section ── */
+        .section {
+            margin-bottom: 64px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .section-header h2 {
+            font-size: 13px;
+            font-weight: 500;
+            color: #505050;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'JetBrains Mono', monospace;
             white-space: nowrap;
         }
 
-        .article {
-            margin-top: 16px;
-            padding: 26px;
+        .section-header .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #1e1e1e, transparent);
         }
 
-        .article h3 {
-            font-size: 1.25rem;
-            margin: 30px 0 12px;
-        }
-
-        .article h3:first-child {
-            margin-top: 0;
-        }
-
-        .article h4 {
-            margin: 18px 0 8px;
-            font-size: 0.98rem;
-        }
-
-        .article p,
-        .article li {
-            color: var(--muted);
-            font-size: 0.94rem;
+        /* ── About ── */
+        .about p {
+            color: #787878;
+            font-size: 15px;
             line-height: 1.85;
+            margin-bottom: 14px;
         }
 
-        .article ul {
+        .about p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about strong {
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        /* ── Focus / What I Do ── */
+        .focus-grid {
             display: grid;
-            gap: 8px;
-            margin: 12px 0 0 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
         }
 
-        .article strong {
-            color: var(--text);
-            font-weight: 700;
+        .focus-item {
+            padding: 16px 18px;
+            border: 1px solid #161616;
+            border-radius: 10px;
+            color: #787878;
+            font-size: 14px;
+            line-height: 1.5;
+            transition: border-color 0.25s ease;
         }
 
-        .article-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 14px;
-            margin: 16px 0;
+        .focus-item:hover {
+            border-color: #2a2a2a;
         }
 
-        .explain-card,
-        .visual-card {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: rgba(21, 27, 35, 0.74);
-            padding: 16px;
-        }
-
-        .explain-card h4,
-        .visual-card h4 {
-            margin-top: 0;
-        }
-
-        .code-block {
-            overflow-x: auto;
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            background: #070a0f;
-            margin: 14px 0;
-        }
-
-        .code-block pre {
-            padding: 16px;
-            color: #d9e7ff;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.78rem;
-            line-height: 1.65;
-        }
-
-        .diagram {
-            display: grid;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .diagram-row {
-            display: grid;
-            grid-template-columns: 112px 1fr;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .diagram-label {
-            color: var(--soft);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.72rem;
-        }
-
-        .diagram-track {
-            min-height: 42px;
-            border: 1px dashed var(--line-strong);
-            border-radius: 8px;
-            padding: 8px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .thread-pill {
-            border: 1px solid rgba(106, 166, 255, 0.36);
-            border-radius: 999px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.68rem;
-            padding: 5px 8px;
-        }
-
-        .thread-pill.carrier {
-            border-color: rgba(90, 193, 123, 0.34);
-            background: rgba(90, 193, 123, 0.10);
-            color: var(--success);
-        }
-
-        .thread-pill.blocked {
-            border-color: rgba(248, 81, 73, 0.34);
-            background: rgba(248, 81, 73, 0.10);
-            color: #ff8a84;
-        }
-
-        .simulator {
-            margin-top: 18px;
-            border: 1px solid rgba(106, 166, 255, 0.30);
-            border-radius: 8px;
-            background: rgba(10, 13, 18, 0.42);
-            padding: 18px;
-        }
-
-        .sim-controls {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin: 14px 0 18px;
-        }
-
-        .sim-control label {
-            display: block;
-            color: var(--muted);
-            font-size: 0.78rem;
-            margin-bottom: 8px;
-            font-family: "JetBrains Mono", monospace;
-        }
-
-        .sim-control input {
-            width: 100%;
-            accent-color: var(--accent);
-        }
-
-        .sim-output {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-        }
-
-        .sim-metric {
-            border: 1px solid var(--line);
-            border-radius: 8px;
-            padding: 14px;
-            background: rgba(21, 27, 35, 0.62);
-        }
-
-        .sim-value {
-            color: var(--accent);
-            font-size: 1.35rem;
-            font-weight: 800;
+        .focus-item .focus-label {
+            color: #b0b0b0;
+            font-size: 13px;
+            font-weight: 500;
             margin-bottom: 4px;
         }
 
-        .sim-label {
-            color: var(--muted);
-            font-size: 0.76rem;
-            line-height: 1.45;
+        /* ── Blog List ── */
+        .blog-list {
+            display: grid;
+            gap: 0;
         }
 
-        .sim-note {
-            color: var(--muted);
-            font-size: 0.82rem;
+        .blog-item {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 16px 0;
+            border-bottom: 1px solid #141414;
+            transition: all 0.2s ease;
+        }
+
+        .blog-item:first-child {
+            padding-top: 0;
+        }
+
+        .blog-item:last-child {
+            border-bottom: none;
+        }
+
+        .blog-item:hover .blog-item-title {
+            color: #fff;
+        }
+
+        .blog-item:hover .blog-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .blog-item-left {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .blog-item-title {
+            color: #c8c8c8;
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            line-height: 1.4;
+            transition: color 0.2s ease;
+        }
+
+        .blog-item-desc {
+            color: #4a4a4a;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .blog-item-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .mini-tag {
+            color: #404040;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
+            padding: 2px 7px;
+            border: 1px solid #1a1a1a;
+            border-radius: 4px;
+        }
+
+        .blog-arrow {
+            color: #484848;
+            font-size: 14px;
+            opacity: 0;
+            transform: translateX(-4px);
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        /* ── Projects ── */
+        .project-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .project-card {
+            padding: 20px 22px;
+            border: 1px solid #161616;
+            border-radius: 10px;
+            transition: border-color 0.25s ease, background 0.25s ease;
+        }
+
+        .project-card:hover {
+            border-color: #252525;
+            background: #111111;
+        }
+
+        .project-card-top {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .project-name {
+            color: #d8d8d8;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .project-tech {
+            color: #383838;
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: nowrap;
+        }
+
+        .project-desc {
+            color: #585858;
+            font-size: 13px;
             line-height: 1.65;
-            margin-top: 12px;
         }
 
+        /* ── Footer ── */
         footer {
-            margin-top: 46px;
-            color: var(--soft);
-            text-align: center;
-            font-family: "JetBrains Mono", monospace;
-            font-size: 0.72rem;
+            padding: 48px 0 40px;
+            margin-top: 16px;
+            border-top: 1px solid #141414;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #2a2a2a;
+            font-size: 13px;
         }
 
-        @media (max-width: 720px) {
+        footer a {
+            color: #404040;
+            transition: color 0.2s ease;
+        }
+
+        footer a:hover {
+            color: #888;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
             .wrapper {
-                padding-top: 34px;
+                padding: 0 20px;
+            }
+
+            nav {
+                padding: 24px 0;
+                margin-bottom: 36px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
             }
 
             .hero {
-                grid-template-columns: 1fr;
-                gap: 18px;
+                margin-bottom: 48px;
             }
 
-            .avatar {
-                width: 84px;
-                height: 84px;
+            .hero h1 {
+                font-size: 2rem;
             }
 
-            .stack,
-            .projects,
-            .project-points,
-            .article-grid,
-            .sim-controls,
-            .sim-output {
+            .section {
+                margin-bottom: 48px;
+            }
+
+            .focus-grid {
                 grid-template-columns: 1fr;
             }
 
-            .stats {
-                grid-template-columns: 1fr;
+            .blog-item {
+                flex-direction: column;
+                gap: 4px;
             }
 
-            .blog-card,
-            .link-card {
-                grid-template-columns: 1fr;
-                gap: 8px;
+            .blog-arrow {
+                display: none;
             }
 
-            .url-label {
+            .project-card-top {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .project-tech {
                 white-space: normal;
             }
         }
     </style>
 </head>
 <body>
-<main class="wrapper">
+<div class="wrapper">
+    <nav>
+        <div class="nav-logo">DK</div>
+        <div class="nav-links">
+            <a href="#blog">Yazılar</a>
+            <a href="#projeler">Projeler</a>
+            <a href="mailto:dogann2536@gmail.com">İletişim</a>
+        </div>
+    </nav>
+
     <header class="hero">
-        <img class="avatar" src="https://github.com/kayadogan1.png" alt="Doğan Kaya">
-        <div>
-            <div class="eyebrow">Backend Developer</div>
-            <h1>Doğan Kaya</h1>
-            <p class="lead">
-                Java ve .NET ekosistemlerinde backend geliştiriyorum. Özellikle <strong>finansal veri akışları</strong>,
-                <strong>mikroservis mimarileri</strong>, <strong>API tasarımı</strong> ve bulut üzerinde çalışan
-                sürdürülebilir sistemler ilgimi çekiyor.
-            </p>
-            <nav class="quick-links" aria-label="Profil bağlantıları">
-                <a href="https://github.com/kayadogan1" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://www.linkedin.com/in/dogann-kaya" target="_blank" rel="noopener">LinkedIn</a>
-                <a href="mailto:dogann2536@gmail.com">E-posta</a>
-            </nav>
+        <h1>Doğan Kaya</h1>
+        <p class="hero-subtitle">
+            Türkiye'den bir <strong>Backend Developer</strong>.<br>
+            Java ve .NET ekosistemlerinde güvenilir, ölçeklenebilir backend sistemleri tasarlıyor ve geliştiriyorum.
+        </p>
+
+        <div class="social-icons">
+            <!-- GitHub -->
+            <a href="https://github.com/kayadogan1" target="_blank" rel="noopener" aria-label="GitHub">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            <!-- LinkedIn -->
+            <a href="https://www.linkedin.com/in/dogann-kaya" target="_blank" rel="noopener" aria-label="LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+            </a>
+            <!-- Email -->
+            <a href="mailto:dogann2536@gmail.com" aria-label="E-posta">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <polyline points="22,4 12,13 2,4"/>
+                </svg>
+            </a>
         </div>
     </header>
 
-    <section class="section" id="blog">
-        <h2 class="section-title">Blog Yazıları</h2>
-        <div class="blog-list">
-            <a class="panel blog-card blog-feature" href="blog-virtual-threads.html">
-                <div>
-                    <div class="blog-title">Java Virtual Thread'ler: Java 21'den Java 24'e carrier thread meselesi</div>
-                    <div class="blog-meta">
-                        Thread modeli, virtual thread API'leri, carrier pinning, semaphore ve performans davranışını
-                        sıfırdan anlatan detaylı Java concurrency yazısı.
-                    </div>
-                    <div class="blog-meta-row">
-                        <span class="tag primary">Java 21</span>
-                        <span class="tag">Java 24</span>
-                        <span class="tag">Virtual Threads</span>
-                        <span class="tag">Performance</span>
-                    </div>
-                </div>
-                <span class="url-label">Oku</span>
-            </a>
-            <a class="panel blog-card blog-feature" href="blog-springboot-cicd-ec2-ghcr.html">
-                <div>
-                    <div class="blog-title">Spring Boot multi-module projeyi Docker ve GHCR ile EC2'ye CI/CD kurmak</div>
-                    <div class="blog-meta">
-                        Dört servisli yapı, gateway, GHCR image push, EC2 deploy, Docker Compose ve GitHub Actions akışını
-                        sıfırdan anlatan deployment rehberi.
-                    </div>
-                    <div class="blog-meta-row">
-                        <span class="tag primary">Spring Boot 4</span>
-                        <span class="tag">Docker</span>
-                        <span class="tag">GHCR</span>
-                        <span class="tag">AWS EC2</span>
-                    </div>
-                </div>
-                <span class="url-label">Oku</span>
-            </a>
-            <a class="panel blog-card blog-feature" href="blog-otel-grafana.html">
-                <div>
-                    <div class="blog-title">Spring Boot 4 ile OpenTelemetry ve Grafana Observability</div>
-                    <div class="blog-meta">
-                        Metrics, traces ve logs sinyallerini okuyarak uygulama performansını ölçme, yorumlama ve
-                        multithreaded ortamlarda context kaybını önleme rehberi.
-                    </div>
-                    <div class="blog-meta-row">
-                        <span class="tag primary">Spring Boot 4</span>
-                        <span class="tag">OpenTelemetry</span>
-                        <span class="tag">Grafana</span>
-                        <span class="tag">Tracing</span>
-                    </div>
-                </div>
-                <span class="url-label">Oku</span>
-            </a>
-        </div>
-    </section>
-
-    <section class="section" id="teknolojiler">
-        <h2 class="section-title">Teknoloji Yığını</h2>
-        <div class="panel stack">
-            <div class="stack-group">
-                <h3>Programming Languages</h3>
-                <div class="tags">
-                    <span class="tag primary">Java</span>
-                    <span class="tag primary">C#</span>
-                    <span class="tag">C</span>
-                    <span class="tag">C++</span>
-                    <span class="tag">JavaScript</span>
-                    <span class="tag">TypeScript</span>
-                </div>
-            </div>
-            <div class="stack-group">
-                <h3>Backend Frameworks</h3>
-                <div class="tags">
-                    <span class="tag primary">Spring Boot</span>
-                    <span class="tag">Spring Cloud</span>
-                    <span class="tag primary">.NET Core</span>
-                    <span class="tag">Hibernate</span>
-                    <span class="tag">Flyway</span>
-                </div>
-            </div>
-            <div class="stack-group">
-                <h3>Frontend</h3>
-                <div class="tags">
-                    <span class="tag primary">React</span>
-                    <span class="tag">HTML</span>
-                    <span class="tag">CSS</span>
-                </div>
-            </div>
-            <div class="stack-group">
-                <h3>Cloud & Infrastructure</h3>
-                <div class="tags">
-                    <span class="tag primary">AWS</span>
-                    <span class="tag primary">Docker</span>
-                    <span class="tag primary">PostgreSQL</span>
-                    <span class="tag">Redis</span>
-                    <span class="tag">Apache Kafka</span>
-                    <span class="tag">Supabase</span>
-                </div>
-            </div>
-            <div class="stack-group">
-                <h3>Security & Observability</h3>
-                <div class="tags">
-                    <span class="tag primary">Keycloak</span>
-                    <span class="tag">OAuth2</span>
-                    <span class="tag">Elasticsearch</span>
-                    <span class="tag">Kibana</span>
-                    <span class="tag">OpenTelemetry</span>
-                    <span class="tag">Grafana</span>
-                </div>
-            </div>
-            <div class="stack-group">
-                <h3>Architecture & Tools</h3>
-                <div class="tags">
-                    <span class="tag primary">Microservices</span>
-                    <span class="tag">API Gateway</span>
-                    <span class="tag">REST APIs</span>
-                    <span class="tag">OOP</span>
-                    <span class="tag">MVC</span>
-                    <span class="tag">Git</span>
-                    <span class="tag">Postman</span>
-                    <span class="tag">Swagger</span>
-                </div>
-            </div>
-            <div class="stack-group">
-                <h3>Testing</h3>
-                <div class="tags">
-                    <span class="tag primary">JUnit</span>
-                    <span class="tag">Mockito</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    <!-- Hakkımda -->
     <section class="section" id="hakkimda">
-        <h2 class="section-title">Hakkımda</h2>
-        <div class="panel about">
+        <div class="section-header">
+            <h2>Hakkımda</h2>
+            <div class="line"></div>
+        </div>
+        <div class="about">
             <p>
                 Backend tarafında yalnızca endpoint yazmaya değil, sistemin üretimde nasıl davranacağına da odaklanıyorum.
-                Temiz kod, okunabilir mimari, DDD yaklaşımı, test edilebilir servisler ve gözlemlenebilirlik benim için
-                günlük geliştirme pratiğinin parçası. Spring Boot ve .NET Core ile çalışırken veritabanı tasarımından
-                CI/CD akışlarına kadar ürünün tamamını düşünen bir geliştirme tarzını seviyorum.
+                <strong>Spring Boot</strong> ve <strong>.NET Core</strong> ile çalışırken veritabanı tasarımından CI/CD
+                akışlarına kadar ürünün tamamını düşünen bir geliştirme tarzını benimsiyorum.
+            </p>
+            <p>
+                Dağıtık sistemler, soyutlamalar, ödünleşimler ve mimari kararlar üzerine düşünmekten
+                keyif alıyorum. Mühendislik, sistemler ve teknoloji üzerine yazıyorum.
             </p>
         </div>
     </section>
 
-    <section class="section" aria-label="Özet bilgiler">
-        <h2 class="section-title">Kısa Özet</h2>
-        <div class="stats">
-            <div class="panel stat">
-                <div class="stat-value">3+</div>
-                <div class="stat-label">Yıl deneyim</div>
+    <!-- Odaklandıklarım -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Odaklandıklarım</h2>
+            <div class="line"></div>
+        </div>
+        <div class="focus-grid">
+            <div class="focus-item">
+                <div class="focus-label">Backend Geliştirme</div>
+                Java ve .NET ekosistemlerinde servis tasarımı
             </div>
-            <div class="panel stat">
-                <div class="stat-value">10+</div>
-                <div class="stat-label">Proje</div>
+            <div class="focus-item">
+                <div class="focus-label">Mimari</div>
+                Mikroservisler, API tasarımı ve DDD yaklaşımı
             </div>
-            <div class="panel stat">
-                <div class="stat-value">2</div>
-                <div class="stat-label">Ana stack</div>
+            <div class="focus-item">
+                <div class="focus-label">Finansal Sistemler</div>
+                Gerçek zamanlı veri akışları ve portföy yönetimi
+            </div>
+            <div class="focus-item">
+                <div class="focus-label">Altyapı</div>
+                Docker, AWS, CI/CD ve Observability
             </div>
         </div>
     </section>
 
+    <!-- Blog Yazıları -->
+    <section class="section" id="blog">
+        <div class="section-header">
+            <h2>Yazılar</h2>
+            <div class="line"></div>
+        </div>
+        <div class="blog-list">
+            <a class="blog-item" href="blog-virtual-threads.html">
+                <div class="blog-item-left">
+                    <div class="blog-item-title">Java Virtual Thread'ler: Java 21'den Java 24'e Carrier Thread Meselesi</div>
+                    <div class="blog-item-desc">
+                        Thread modeli, Virtual Thread API'leri, carrier pinning, semaphore ve performans davranışını
+                        sıfırdan anlatan detaylı concurrency yazısı.
+                    </div>
+                    <div class="blog-item-tags">
+                        <span class="mini-tag">Java 21</span>
+                        <span class="mini-tag">Java 24</span>
+                        <span class="mini-tag">Virtual Threads</span>
+                    </div>
+                </div>
+                <span class="blog-arrow">→</span>
+            </a>
+
+            <a class="blog-item" href="blog-springboot-cicd-ec2-ghcr.html">
+                <div class="blog-item-left">
+                    <div class="blog-item-title">Spring Boot Multi-Module Projeyi Docker ve GHCR ile EC2'ye CI/CD Kurmak</div>
+                    <div class="blog-item-desc">
+                        Dört servisli yapı, gateway, GHCR image push, EC2 deploy, Docker Compose ve
+                        GitHub Actions akışını sıfırdan anlatan deployment rehberi.
+                    </div>
+                    <div class="blog-item-tags">
+                        <span class="mini-tag">Spring Boot</span>
+                        <span class="mini-tag">Docker</span>
+                        <span class="mini-tag">GHCR</span>
+                        <span class="mini-tag">AWS EC2</span>
+                    </div>
+                </div>
+                <span class="blog-arrow">→</span>
+            </a>
+
+            <a class="blog-item" href="blog-otel-grafana.html">
+                <div class="blog-item-left">
+                    <div class="blog-item-title">Spring Boot 4 ile OpenTelemetry ve Grafana Observability</div>
+                    <div class="blog-item-desc">
+                        Metrics, traces ve logs sinyallerini okuyarak uygulama performansını ölçme,
+                        yorumlama ve multithreaded ortamlarda context kaybını önleme rehberi.
+                    </div>
+                    <div class="blog-item-tags">
+                        <span class="mini-tag">OpenTelemetry</span>
+                        <span class="mini-tag">Grafana</span>
+                        <span class="mini-tag">Tracing</span>
+                    </div>
+                </div>
+                <span class="blog-arrow">→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Projeler -->
     <section class="section" id="projeler">
-        <h2 class="section-title">Projeler</h2>
-        <div class="projects">
-            <article class="panel project featured">
-                <div class="project-kicker">Finance Portal</div>
-                <h3>Finansal portföy, piyasa verisi ve kullanıcı işlemleri için backend odaklı platform</h3>
-                <p>
-                    Hisse, kripto ve tahvil gibi varlıkları tek panelde takip etmeye odaklanan; kullanıcı yönetimi,
-                    portföy hesaplama, canlı/veri odaklı fiyat güncelleme ve raporlama akışlarını içeren finans portalı.
-                    Sistem tarafında ölçeklenebilir servis yapısı, cache stratejileri, asenkron mesajlaşma ve bulut
-                    dağıtım süreci birlikte ele alındı.
-                </p>
-                <div class="project-points">
-                    <div class="project-point">
-                        <strong>Backend mimarisi</strong>
-                        Spring Boot servisleri, REST API tasarımı, katmanlı mimari ve DDD odaklı domain ayrımı.
-                    </div>
-                    <div class="project-point">
-                        <strong>Veri katmanı</strong>
-                        PostgreSQL ile ilişkisel modelleme, Redis ile cache, Elasticsearch ile hızlı arama ve filtreleme.
-                    </div>
-                    <div class="project-point">
-                        <strong>Dağıtık akış</strong>
-                        Kafka üzerinden fiyat, bildirim ve işlem olaylarının servisler arasında taşınması.
-                    </div>
-                    <div class="project-point">
-                        <strong>Yayınlama</strong>
-                        Docker, AWS ve CI/CD pipeline ile otomatik build, test ve deploy akışı.
-                    </div>
-                </div>
-                <div class="tags">
-                    <span class="tag primary">Java</span>
-                    <span class="tag primary">Spring Boot</span>
-                    <span class="tag">PostgreSQL</span>
-                    <span class="tag">Redis</span>
-                    <span class="tag">Elasticsearch</span>
-                    <span class="tag">Kafka</span>
-                    <span class="tag">Docker</span>
-                    <span class="tag">AWS</span>
-                    <span class="tag">CI/CD</span>
-                </div>
-            </article>
-
-            <article class="panel project">
-                <div class="project-kicker">Finstant</div>
-                <h3>Finansal veri akışı ve arama altyapısı üzerine Java tabanlı platform</h3>
-                <p>
-                    REST ve telnet tabanlı veri girişlerini işleyen, finansal verileri domain katmanında ayrıştıran ve
-                    Kafka üzerinden tüketici servislerine aktaran backend projesi. PostgreSQL ve OpenSearch tarafı ile
-                    kalıcı veri, arama ve analiz akışlarını destekleyecek şekilde kurgulandı.
-                </p>
-                <div class="tags">
-                    <span class="tag primary">Java</span>
-                    <span class="tag">Kafka</span>
-                    <span class="tag">PostgreSQL</span>
-                    <span class="tag">OpenSearch</span>
-                    <span class="tag">Docker Compose</span>
-                    <span class="tag">Filebeat</span>
-                    <span class="tag">REST</span>
-                    <span class="tag">CI/CD</span>
-                </div>
-            </article>
-
-            <article class="panel project">
-                <div class="project-kicker">FitnessApp</div>
-                <h3>Spor salonu yönetimi için modüler .NET uygulaması</h3>
-                <p>
-                    Üye, randevu, yönetim paneli ve ortak domain bileşenlerini ayrı katmanlarda ele alan spor salonu
-                    yönetim sistemi. Docker Compose ve GitHub Actions akışıyla geliştirme, test ve yayın süreci
-                    otomasyona bağlandı.
-                </p>
-                <div class="tags">
-                    <span class="tag primary">.NET</span>
-                    <span class="tag primary">C#</span>
-                    <span class="tag">ASP.NET Core</span>
-                    <span class="tag">Docker</span>
-                    <span class="tag">Docker Compose</span>
-                    <span class="tag">GitHub Actions</span>
-                    <span class="tag">Layered Architecture</span>
-                </div>
-            </article>
-
-            <article class="panel project">
-                <div class="project-kicker">Mobilya E-Commerce</div>
-                <h3>Premium mobilya satış deneyimi için full-stack e-commerce sitesi</h3>
-                <p>
-                    React istemci, Express API ve Prisma veri katmanıyla geliştirilen full-stack e-commerce projesi.
-                    Ürün listeleme, kategori yönetimi, admin tarafı ve production deploy akışıyla uçtan uca çalışan
-                    bir web uygulaması olarak tasarlandı.
-                </p>
-                <div class="tags">
-                    <span class="tag primary">React</span>
-                    <span class="tag primary">TypeScript</span>
-                    <span class="tag">Express</span>
-                    <span class="tag">Prisma</span>
-                    <span class="tag">SQLite</span>
-                    <span class="tag">Vercel</span>
-                    <span class="tag">Full-stack</span>
-                </div>
-            </article>
+        <div class="section-header">
+            <h2>Projeler</h2>
+            <div class="line"></div>
         </div>
-    </section>
+        <div class="project-list">
+            <div class="project-card">
+                <div class="project-card-top">
+                    <span class="project-name">Finance Portal</span>
+                    <span class="project-tech">Java · Spring Boot · PostgreSQL · Redis · Kafka</span>
+                </div>
+                <div class="project-desc">
+                    Hisse, kripto ve tahvil gibi varlıkları tek panelde takip eden, portföy hesaplama,
+                    canlı fiyat güncelleme ve raporlama akışlarını içeren backend odaklı finans platformu.
+                </div>
+            </div>
 
-    <section class="section" id="iletisim">
-        <h2 class="section-title">Bağlantılar</h2>
-        <div class="links-list">
-            <a href="https://github.com/kayadogan1" class="panel link-card" target="_blank" rel="noopener">
-                <div>
-                    <div class="link-title">GitHub</div>
-                    <div class="link-meta">github.com/kayadogan1</div>
+            <div class="project-card">
+                <div class="project-card-top">
+                    <span class="project-name">Finstant</span>
+                    <span class="project-tech">Java · Kafka · PostgreSQL · OpenSearch</span>
                 </div>
-                <span class="url-label">Profil</span>
-            </a>
-            <a href="https://www.linkedin.com/in/dogann-kaya" class="panel link-card" target="_blank" rel="noopener">
-                <div>
-                    <div class="link-title">LinkedIn</div>
-                    <div class="link-meta">linkedin.com/in/dogann-kaya</div>
+                <div class="project-desc">
+                    REST ve telnet tabanlı veri girişlerini işleyen, finansal verileri domain katmanında
+                    ayrıştıran ve Kafka üzerinden tüketici servislerine aktaran backend projesi.
                 </div>
-                <span class="url-label">Profil</span>
-            </a>
-            <a href="mailto:dogann2536@gmail.com" class="panel link-card">
-                <div>
-                    <div class="link-title">E-posta</div>
-                    <div class="link-meta">dogann2536@gmail.com</div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-card-top">
+                    <span class="project-name">Fitness App</span>
+                    <span class="project-tech">.NET Core · C# · ASP.NET · Docker</span>
                 </div>
-                <span class="url-label">İletişim</span>
-            </a>
+                <div class="project-desc">
+                    Üye, randevu ve yönetim paneli bileşenlerini ayrı katmanlarda ele alan
+                    modüler spor salonu yönetim sistemi.
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-card-top">
+                    <span class="project-name">Mobilya E-Commerce</span>
+                    <span class="project-tech">React · TypeScript · Express · Prisma</span>
+                </div>
+                <div class="project-desc">
+                    Ürün listeleme, kategori yönetimi ve admin paneli ile uçtan uca çalışan
+                    full-stack e-ticaret uygulaması.
+                </div>
+            </div>
         </div>
     </section>
 
     <footer>
-        Doğan Kaya - Backend Developer
+        <span>Doğan Kaya © 2025</span>
+        <a href="mailto:dogann2536@gmail.com">dogann2536@gmail.com</a>
     </footer>
-</main>
-<script>
-    const simulator = document.querySelector("[data-thread-sim]");
-
-    if (simulator) {
-        const tasksInput = simulator.querySelector("[data-sim-tasks]");
-        const waitInput = simulator.querySelector("[data-sim-wait]");
-        const pinnedInput = simulator.querySelector("[data-sim-pinned]");
-        const tasksValue = simulator.querySelector("[data-tasks-value]");
-        const waitValue = simulator.querySelector("[data-wait-value]");
-        const pinnedValue = simulator.querySelector("[data-pinned-value]");
-        const platformTime = simulator.querySelector("[data-platform-time]");
-        const virtualTime = simulator.querySelector("[data-virtual-time]");
-        const speedup = simulator.querySelector("[data-speedup]");
-        const note = simulator.querySelector("[data-sim-note]");
-
-        const formatSeconds = (milliseconds) => {
-            if (milliseconds < 1000) return `${Math.round(milliseconds)} ms`;
-            return `${(milliseconds / 1000).toFixed(1)} sn`;
-        };
-
-        const updateSimulation = () => {
-            const tasks = Number(tasksInput.value);
-            const wait = Number(waitInput.value);
-            const pinned = Number(pinnedInput.value);
-            const platformWorkers = 120;
-            const carrierWorkers = 8;
-            const virtualOverhead = 18;
-            const platform = Math.ceil(tasks / platformWorkers) * wait;
-            const virtualBase = Math.ceil(tasks / (carrierWorkers * 160)) * (wait + virtualOverhead);
-            const pinnedPenalty = wait * (pinned / 100) * Math.ceil(tasks / carrierWorkers) * 0.06;
-            const virtual = virtualBase + pinnedPenalty;
-            const ratio = Math.max(platform / Math.max(virtual, 1), 1);
-
-            tasksValue.textContent = tasks.toLocaleString("tr-TR");
-            waitValue.textContent = wait;
-            pinnedValue.textContent = pinned;
-            platformTime.textContent = formatSeconds(platform);
-            virtualTime.textContent = formatSeconds(virtual);
-            speedup.textContent = `${ratio.toFixed(1)}x`;
-
-            if (pinned < 20) {
-                note.textContent = "Bloklanan carrier oranı düşükken virtual thread modeli beklemeli işlerde ciddi avantaj sağlar.";
-            } else if (pinned < 50) {
-                note.textContent = "Carrier bloklanması arttıkça avantaj azalır; burada kütüphane ve senkronize blokları kontrol etmek gerekir.";
-            } else {
-                note.textContent = "Carrier'lar çok bloklanıyorsa virtual thread'in hafifliği kaybolur ve performans beklenenden düşük kalır.";
-            }
-        };
-
-        [tasksInput, waitInput, pinnedInput].forEach((input) => {
-            input.addEventListener("input", updateSimulation);
-        });
-
-        updateSimulation();
-    }
-</script>
+</div>
 </body>
 </html>
